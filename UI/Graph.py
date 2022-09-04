@@ -67,10 +67,9 @@ def display_hist(stock, hist, type, dark_mode=False, vol=False, indicators=[], i
     return plt
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # Example Graph
     hist = get_hist('AAPL', 100, '1d')
     display_hist('AAPL', hist, 'candles', dark_mode=True,
                  indicators=[ind.rsi(hist, 14, 'Close'), ind.stochastic_rsi(hist, 3, 3, 14, 'Close'), ind.sma(hist, 20),
-                             ind.ema(hist, 14)],
-                 inames=['RSI', 'Stochastic RSI', 'SMA', 'EMA'], ema_sma_w_hist=True,
+                             ind.ema(hist, 14)], inames=['RSI', 'Stochastic RSI', 'SMA', 'EMA'], ema_sma_w_hist=True,
                  icolors=['#A865C9', ['#FBBF77', 'b'], 'g', 'r']).show()
