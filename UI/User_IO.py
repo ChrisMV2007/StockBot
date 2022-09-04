@@ -21,6 +21,32 @@ def inp(ques, ans=None, int_only=False, yn=False, rep_msg=None, rep=False, no_an
                                                                                                    no_ans=no_ans)
 
 
+def new_user(df, path):
+    user = input('What would you like your username to be? ')
+    if user in list(df['User']):
+        print('This username is taken!')
+        new_user(df, path)
+    else:
+        row = [f'{user}', f'info {user}']
+        newuser = pd.DataFrame(row)
+        users = pd.concat([df, newuser], ignore_index=True)
+        with open(path, 'a') as users:
+            writer = csv.writer(users)
+            writer.writerow(row)
+        data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+        return data.loc[data['User'] == user]
+
+
+def login(df, path):
+    user = input('What is your username? ')
+    if user not in list(df['User']):
+        print('This user does not exist!')
+        login(df, path)
+    else:
+        data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+        return data.loc[data['User'] == user]
+
+
 def login_signup():
     users = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
 
@@ -32,3 +58,10 @@ def login_signup():
     if los == 'log in':
         userinfo = login(users, 'UsersandSettings.csv')
 
+def autograph(hist, userinfo):
+
+
+
+
+if __name__ == '__main__':
+    userinfo = login_signup()
