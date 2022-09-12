@@ -161,24 +161,27 @@ def manual_graph(username):
 
                 if param == 'indicator colors':
                     if ind == 'stochastic rsi':
-                        cols = [input('What would you like the first stochastic RSI color to be? '),
-                                input('What would you like the second stochastic RSI color to be? ')]
+                        cols = [input('What would you like the first stochastic RSI color to be (hex value)? '),
+                                input('What would you like the second stochastic RSI color to be (hex value)? ')]
                         if not validity_check(c, ['color', 'color']):
                             print('Please enter valid hex values (ex : "#000000")')
                             continue
                         userinfo['Def_Stochastic RSI_Col'] = ','.join(cols)
 
                     else:
-                        col = input('What color would you like your indicator to be? ')
+                        col = input('What color would you like your indicator to be (hex value)? ')
                         if not validity_check([c], ['color']):
                             print('Please enter valid hex values (ex : "#000000")')
                             continue
                         userinfo[f'Def_{ind.upper()}_Col'] = ','.join(cols)
 
                 if param == 'indicator settings':
+                    set_user_dict = {'rsi': 'period, time id', 'stochastic rsi': 'k window, d window, window, time id',
+                                     'sma': 'sma period', 'ema': 'ema period'}
+                    set_validity_dict = {'rsi': [int, ['Close, High, Open, Low']], 'sma': [int], 'ema': [int],
+                                         'stochastic rsi': [int, int, int, ['Close, High, Open, Low']]}
                     sets = input(
-                        f'What would you like your settings to be for {param.upper() if param != "stochastic rsi" else "stochastic RSI"}')
-                    
+                        f'What would you like your settings to be for {param.upper() if param != "stochastic rsi" else "stochastic RSI"} (format: <{set_user_dict[param]}>)?')
 
     return userinfo
 
