@@ -1,10 +1,11 @@
 import pandas as pd
+import Backend.StockPrices as SP
 import Backend.Indicators as Indicators
 import Graph as graph
 import csv
 
 
-def inp(ques, ans=None, int_only=False, yn=False, rep_msg=None, rep=False, no_ans=False):
+def inp(ques, ans=None, int_only=False, yn=False, rep_msg=None, rep=False, no_ans=False, cond=None):
     if ans:
         ans = [an.lower() for an in ans]
     if rep:
@@ -17,10 +18,16 @@ def inp(ques, ans=None, int_only=False, yn=False, rep_msg=None, rep=False, no_an
             return str(int(res))
         except:
             inp(ques, int_only=True, rep_msg=rep_msg, rep=True)
+    if cond:
+        if cond:
+            return res
+        else:
+            inp(ques, ans=ans, yn=yn, rep_msg=rep_msg, rep=True, no_ans=no_ans, cond=cond)
     return res if not yn and not ans or yn and res in ['yes', 'no'] or ans and res in ans else inp(ques, ans=ans, yn=yn,
                                                                                                    rep_msg=rep_msg,
                                                                                                    rep=True,
-                                                                                                   no_ans=no_ans)
+                                                                                                   no_ans=no_ans,
+                                                                                                   cond=cond)
 
 
 def new_user(df, path):
@@ -64,7 +71,7 @@ def login_signup():
     if los == 'log in':
         userinfo = login(users, 'UsersandSettings.csv')
 
-    return userinfo
+    return userinfo, los  # los = username
 
 
 def try_replace(x):
@@ -96,10 +103,85 @@ def auto_graph(hist, stockname, userinfo):
         col = userinfo[f'Def_{i}_Col']
         colors.append(col if ',' not in col else col.split(','))
 
-    graph.graph(stock=stockname, hist=hist, type=userinfo['Def_Gtype'],
-                dark_mode=True if userinfo['DarkMode'] == 'Y' else False, indicators=indicators, inames=inames,
-                ema_sma_w_hist=True if userinfo['MAwHist'] == 'Y' else False, icolors=colors)
+    return graph.graph(stock=stockname, hist=hist, type=userinfo['Def_Gtype'],
+                       dark_mode=True if userinfo['DarkMode'] == 'Y' else False, indicators=indicators, inames=inames,
+                       ema_sma_w_hist=True if userinfo['MAwHist'] == 'Y' else False, icolors=colors)
+
+
+def graph_watchlist(userinfo):
+    return [auto_graph(SP.get_hist(s, userinfo['def_hist_days'], userinfo['def_hist_interval']), s, userinfo) for s in
+            userinfo['Watchlist'].split(',')]
+
+
+def manual_graph(username):
+    def validity_check(rsp, format):
+        for ind, inp in enumerate(rsp.split(',')):
+            if format[ind] == int:
+                try:
+                    x = int(rsp)
+                except:
+                    return False
+            elif format[ind] == 'color':
+                if len(rsp) != 7 or rsp[0] != '#':
+                    return False
+            else:
+                if rsp not in format[ind]:
+                    return False
+        return True
+
+    param = None
+    oneval_dict = {'graph type': 'Def_Gtype', 'dark mode': 'DarkMode'}
+    while param != 'finished':
+        params = ['Graph Type', 'Dark Mode', 'Indicators', 'Indicator Settings', 'Indicator Colors', 'Stock History']
+        param = inp('Which setting would you like to change ("options" for options, "finished" to exit)? ',
+                    ans=['options', 'finished'] + [params], rep_msg='Please input "options", "finished", or a setting')
+        if param == 'options':
+            print(f'Settings : {params}; some of these settings have sub settings.')
+
+        elif param in params:
+
+            if param in ['graph type', 'dark mode']:
+                val = inp(
+                    'Would you like your graph to be displayed via line or candles? ' if param == 'Graph Type' else
+                    'Would you like to use dark mode?', ans=['line', 'candles'] if param == 'Graph Type' else None,
+                    yn=True if param == 'Dark Mode' else None, rep_msg='Please input either "line" or "candles".' if
+                    param == 'Graph Type' else 'Please enter either "yes" or "no".')
+                userinfo[oneval_dict[val]] = val
+
+            elif param == 'indicators':
+                userinfo['Indicators'] = ','.join(
+                    [ind for ind in ['rsi', 'stochastic rsi', 'ema', 'sma'] if ind in input(
+                        'What indicators would you like to use (RSI, Stochastic RSI, EMA, SMA)? ').lower()])
+
+            elif param in ['indicator colors', 'indicator settings']:
+                ind = inp('Which indicator would you like to change the color of (RSI, Stochastic RSI, EMA, SMA)? ' if
+                          param == 'indicator colors' else 'Which indicator would you like to change the settings of '
+                                                           '(RSI, Stochastic RSI, EMA, SMA)? ',
+                          ans=['RSI', 'SMA', 'EMA', 'Stochastic RSI'], rep_msg='Please enter an indicator')
+
+                if param == 'indicator colors':
+                    if ind == 'stochastic rsi':
+                        cols = [input('What would you like the first stochastic RSI color to be? '),
+                                input('What would you like the second stochastic RSI color to be? ')]
+                        if not validity_check(c, ['color', 'color']):
+                            print('Please enter valid hex values (ex : "#000000")')
+                            continue
+                        userinfo['Def_Stochastic RSI_Col'] = ','.join(cols)
+
+                    else:
+                        col = input('What color would you like your indicator to be? ')
+                        if not validity_check([c], ['color']):
+                            print('Please enter valid hex values (ex : "#000000")')
+                            continue
+                        userinfo[f'Def_{ind.upper()}_Col'] = ','.join(cols)
+
+                if param == 'indicator settings':
+                    sets = input(
+                        f'What would you like your settings to be for {param.upper() if param != "stochastic rsi" else "stochastic RSI"}')
+                    
+
+    return userinfo
 
 
 if __name__ == '__main__':
-    userinfo = login_signup()
+    userinfo, username = login_signup()
