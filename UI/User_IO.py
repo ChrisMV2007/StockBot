@@ -176,17 +176,18 @@ def manual_graph(username):
                         userinfo[f'Def_{ind.upper()}_Col'] = ','.join(cols)
 
                 if param == 'indicator settings':
-                    set_user_dict = {'rsi': 'period, time id', 'stochastic rsi': 'k window, d window, window, time id',
-                                     'sma': 'sma period', 'ema': 'ema period'}
+                    set_user_dict = {'rsi': 'period,time id', 'stochastic rsi': 'k window,d window,window,time id',
+                                     'sma': 'sma period (only parameter)', 'ema': 'ema period (only parameter)'}
                     set_validity_dict = {'rsi': [int, ['Close, High, Open, Low']], 'sma': [int], 'ema': [int],
                                          'stochastic rsi': [int, int, int, ['Close, High, Open, Low']]}
                     sets = input(
-                        f'What would you like your settings to be for {param.upper() if param != "stochastic rsi" else "stochastic RSI"} (format: <{set_user_dict[param]}>)?')
+                        f'What would you like your settings to be for {ind.upper() if ind != "stochastic rsi" else "stochastic RSI"} (format: <{set_user_dict[ind]}>)?')
                     if not validity_check(sets, set_validity_dict[ind]):
                         print(
                             f'Please enter the correct settings format for {ind.upper() if ind != "stochastic rsi" else "stochastic RSI"}. ')
                         continue
-                    
+                    userinfo[f'Def_{ind.upper() if ind != "stochastic rsi" else "Stochastic RSI"}_Set'] = sets
+
     return userinfo
 
 
