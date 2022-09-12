@@ -182,7 +182,11 @@ def manual_graph(username):
                                          'stochastic rsi': [int, int, int, ['Close, High, Open, Low']]}
                     sets = input(
                         f'What would you like your settings to be for {param.upper() if param != "stochastic rsi" else "stochastic RSI"} (format: <{set_user_dict[param]}>)?')
-
+                    if not validity_check(sets, set_validity_dict[ind]):
+                        print(
+                            f'Please enter the correct settings format for {ind.upper() if ind != "stochastic rsi" else "stochastic RSI"}. ')
+                        continue
+                    
     return userinfo
 
 
