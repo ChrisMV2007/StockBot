@@ -16,8 +16,10 @@ class invalid_type(Exception):
 
 # IMPORTANT NOTE: IF EMA_SMA_W_HIST IS SET TO TRUE, SMA AND EMA MUST BE INPUT AFTER RSI AND STOCHASTIC RSI IN THE
 # INDICATORS LIST
-def display_hist(stock, hist, type, dark_mode=False, vol=False, indicators=[], inames=[], ema_sma_w_hist=False,
-                 icolors=[], ibounds={}):
+def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_w_hist=False, icolors=[]):
+    if indicators=='NA_':
+        indicators=[]
+    
     if type not in ['line', 'candles']:
         raise invalid_type(type, 'display stock history', ['line', 'candles'])
     if dark_mode:
@@ -53,10 +55,15 @@ def display_hist(stock, hist, type, dark_mode=False, vol=False, indicators=[], i
                                label=label)
             ax[index + 1].plot(hist['Date'][len(hist) - len(indicator[1]):], indicator[1], color=color[1],
                                label=label)
+            ax[index + 1].fill_between(hist['Date'], -20, 20, color=color[0], alpha=0.25)
+            ax[index + 1].fill_between(hist['Date'], 80, 120, color=color[1], alpha=0.25)
         if inames[index] in ['EMA', 'SMA'] and ema_sma_w_hist:
             index = -1
         else:
             ax[index + 1].set_ylabel(inames[index])
+        if label == 'RSI':
+            ax[index + 1].fill_between(hist['Date'], 10, 30, color=color, alpha=0.25)
+            ax[index + 1].fill_between(hist['Date'], 70, 90, color=color, alpha=0.25)
         if label != 'Stochastic RSI':
             ax[index + 1].plot(hist['Date'][len(hist) - len(indicator):], indicator, color=color, label=label)
 
@@ -69,7 +76,7 @@ def display_hist(stock, hist, type, dark_mode=False, vol=False, indicators=[], i
 
 if __name__ == '__main__':  # Example Graph
     hist = get_hist('AAPL', 100, '1d')
-    display_hist('AAPL', hist, 'candles', dark_mode=True,
-                 indicators=[ind.rsi(hist, 14, 'Close'), ind.stochastic_rsi(hist, 3, 3, 14, 'Close'), ind.sma(hist, 20),
-                             ind.ema(hist, 14)], inames=['RSI', 'Stochastic RSI', 'SMA', 'EMA'], ema_sma_w_hist=True,
-                 icolors=['#A865C9', ['#FBBF77', 'b'], 'g', 'r']).show()
+    graph('AAPL', hist, 'candles', dark_mode=True,
+          indicators=[ind.rsi(hist, 14, 'Close'), ind.stochastic_rsi(hist, 3, 3, 5, 'Close'), ind.sma(hist, 20),
+                      ind.ema(hist, 14)], inames=['RSI', 'Stochastic RSI', 'SMA', 'EMA'], ema_sma_w_hist=True,
+          icolors=['#A865C9', ['#FBBF77', 'b'], '#FFD580', '#FFFFE0']).show()
