@@ -113,7 +113,7 @@ def graph_watchlist(userinfo):
             userinfo['Watchlist'].split(',')]
 
 
-def manual_graph(username):
+def manual_graph(userinfo):
     def validity_check(rsp, format):
         for ind, inp in enumerate(rsp.split(',')):
             if format[ind] == int:
@@ -210,11 +210,24 @@ def manual_graph(username):
                         userinfo['def_hist_interval'] = inp(
                             'How long should be taken in between each sample? ',
                             ans=['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo'],
-                            rep_msg=f'Please enter a valid time interval. Valid intervals : {ans}'
-                        )
+                            rep_msg=f'Please enter a valid time interval. Valid intervals : {ans}')
 
     return userinfo
 
 
+def change_settings(username, userinfo):
+    uinfo = manual_graph(userinfo)
+
+    data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+    data.set_index('User', inplace=True)
+    data.drop([username], inplace=True)
+    data.append(uinfo)
+
+    with open('UsersandSettings.csv', 'w') as users:
+        writer = csv.writer(users)
+        writer.writerows(data)
+
+
 if __name__ == '__main__':
     userinfo, username = login_signup()
+    change_settings(username, userinfo)
