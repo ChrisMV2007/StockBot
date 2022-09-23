@@ -1,0 +1,9 @@
+User,Watchlist,Def_Gtype,DarkMode,Def_Indicators,Def_RSI_Set,Def_Stochastic RSI_Set,Def_EMA_Set,Def_SMA_Set,Def_RSI_Col,Def_Stochastic RSI_Col,Def_EMA_Col,Def_SMA_Col,MSwHist,Def_hist_length,def_hist_interval
+Default,"AAPL,MSFT,TSLA",line,no,NA_,"14,Close","3,3,5,Close",14,20,#A865C9,"#FBBF77,b",#FFD580,#FFFFEO,yes,180,1d
+Temp,,,,,,,,,,,,,,,
+C,"AAPL,MSFT,TSLA",line,no,NA_,"14,Close","3,3,5,Close",14.0,20.0,#A865C9,"#FBBF77,b",#FFD580,#FFFFEO,yes,180.0,1d
+
+G,"AAPL,MSFT,TSLA",line,no,NA_,"14,Close","3,3,5,Close",14.0,20.0,#A865C9,"#FBBF77,b",#FFD580,#FFFFEO,yes,180.0,1d
+
+CG,"AAPL,MSFT,TSLA",line,no,NA_,"14,Close","3,3,5,Close",14.0,20.0,#A865C9,"#FBBF77,b",#FFD580,#FFFFEO,yes,180.0,1d
+
