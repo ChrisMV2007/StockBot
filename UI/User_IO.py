@@ -46,7 +46,7 @@ def new_user(df, path):
             writer = csv.writer(users)
             writer.writerow(newuser.iloc[0])
         data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-        return data.loc[data['User'] == user]
+        return data.loc[data['User'] == user], user
 
 
 def login(df, path):
@@ -58,20 +58,21 @@ def login(df, path):
 
     else:
         data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-        return data.loc[data['User'] == user]
+        return data.loc[data['User'] == user], user
 
 
 def login_signup():
+    print('\n------------------------------ \n')
     users = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-    los = inp('Would you like to log in or sign up (log in, sign up)? ', ['log in', 'sign up'],
+    los = inp('>>> Would you like to log in or sign up (log in, sign up)? ', ['log in', 'sign up'],
               rep_msg='Please enter either "log in" or "sign up"')
 
     if los == 'sign up':
-        userinfo = new_user(users, 'UsersandSettings.csv')
+        userinfo, username = new_user(users, 'UsersandSettings.csv')
     if los == 'log in':
-        userinfo = login(users, 'UsersandSettings.csv')
+        userinfo, username = login(users, 'UsersandSettings.csv')
 
-    return userinfo, los  # los = username
+    return userinfo, username  # los = username
 
 
 def try_replace(x):
@@ -104,7 +105,7 @@ def auto_graph(hist, stockname, userinfo):
         colors.append(col if ',' not in col else col.split(','))
 
     return graph.graph(stock=stockname, hist=hist, type=userinfo['Def_Gtype'],
-                       dark_mode=True if userinfo['DarkMode'] == 'Y' else False, indicators=indicators, inames=inames,
+                       dark_mode=True if userinfo['DarkMode'] == 'yes' else False, indicators=indicators, inames=inames,
                        ema_sma_w_hist=True if userinfo['MAwHist'] == 'Y' else False, icolors=colors)
 
 
@@ -114,6 +115,8 @@ def graph_watchlist(userinfo):
 
 
 def manual_graph(userinfo):
+    print('\n------------------------- \n')
+
     def validity_check(rsp, format):
         for ind, inp in enumerate(rsp.split(',')):
             if format[ind] == int:
@@ -134,83 +137,83 @@ def manual_graph(userinfo):
     while param != 'finished':
         params = ['Graph Type', 'Dark Mode', 'Indicators', 'Indicator Settings', 'Indicator Colors', 'Stock History',
                   'Moving Average Location']
-        param = inp('Which setting would you like to change ("options" for options, "finished" to exit)? ',
-                    ans=['options', 'finished'] + [params], rep_msg='Please input "options", "finished", or a setting')
+        param = inp('\n>>> Which setting would you like to change ("options" for options, "finished" to exit)? ',
+                    ans=['options', 'finished'] + params, rep_msg='Please input "options", "finished", or a setting')
         if param == 'options':
             print(f'Settings : {params}; some of these settings have sub settings.')
 
-        elif param in params:
+        elif param in [param.lower() for param in params]:
 
             if param == 'moving average location':
                 userinfo['MAwHist'] = inp(
-                    'Would you like your moving averages (sma/ema) to be displayed in the same graph as the stock '
+                    '>>> Would you like your moving averages (sma/ema) to be displayed in the same graph as the stock '
                     'itself (yes or no)? ', yn=True)
 
             if param in ['graph type', 'dark mode']:
                 val = inp(
-                    'Would you like your graph to be displayed via line or candles? ' if param == 'Graph Type' else
-                    'Would you like to use dark mode?', ans=['line', 'candles'] if param == 'Graph Type' else None,
+                    '>>> Would you like your graph to be displayed via line or candles? ' if param == 'Graph Type' else
+                    '>>> Would you like to use dark mode?', ans=['line', 'candles'] if param == 'Graph Type' else None,
                     yn=True if param == 'Dark Mode' else None, rep_msg='Please input either "line" or "candles".' if
                     param == 'Graph Type' else 'Please enter either "yes" or "no".')
                 userinfo[oneval_dict[val]] = val
 
-            elif param == 'indicators':
+            if param == 'indicators':
+                inds = input('>>> What indicators would you like to use (RSI, Stochastic RSI, EMA, SMA)? ')
                 userinfo['Indicators'] = ','.join(
-                    [ind for ind in ['rsi', 'stochastic rsi', 'ema', 'sma'] if ind in input(
-                        'What indicators would you like to use (RSI, Stochastic RSI, EMA, SMA)? ').lower()])
+                    [ind for ind in ['rsi', 'stochastic rsi', 'ema', 'sma'] if ind in inds.lower()])
 
-            elif param in ['indicator colors', 'indicator settings']:
-                ind = inp('Which indicator would you like to change the color of (RSI, Stochastic RSI, EMA, SMA)? ' if
-                          param == 'indicator colors' else 'Which indicator would you like to change the settings of '
-                                                           '(RSI, Stochastic RSI, EMA, SMA)? ',
+            if param in ['indicator colors', 'indicator settings']:
+                ind = inp('>>> Which indicator would you like to change the color of (RSI, Stochastic RSI, EMA, SMA)? '
+                          if param == 'indicator colors' else '>>> Which indicator would you like to change the '
+                                                              'settings of (RSI, Stochastic RSI, EMA, SMA)? ',
                           ans=['RSI', 'SMA', 'EMA', 'Stochastic RSI'], rep_msg='Please enter an indicator')
 
-                if param == 'indicator colors':
-                    if ind == 'stochastic rsi':
-                        cols = [input('What would you like the first stochastic RSI color to be (hex value)? '),
-                                input('What would you like the second stochastic RSI color to be (hex value)? ')]
-                        if not validity_check(c, ['color', 'color']):
-                            print('Please enter valid hex values (ex : "#000000")')
-                            continue
-                        userinfo['Def_Stochastic RSI_Col'] = ','.join(cols)
-
-                    else:
-                        col = input('What color would you like your indicator to be (hex value)? ')
-                        if not validity_check([c], ['color']):
-                            print('Please enter valid hex values (ex : "#000000")')
-                            continue
-                        userinfo[f'Def_{ind.upper()}_Col'] = ','.join(cols)
-
-                if param == 'indicator settings':
-                    set_user_dict = {'rsi': 'period,time id', 'stochastic rsi': 'k window,d window,window,time id',
-                                     'sma': 'sma period (only parameter)', 'ema': 'ema period (only parameter)'}
-                    set_validity_dict = {'rsi': [int, ['Close, High, Open, Low']], 'sma': [int, ['yes', 'no']],
-                                         'ema': [int],
-                                         'stochastic rsi': [int, int, int, ['Close, High, Open, Low']]}
-                    sets = input(
-                        f'What would you like your settings to be for {ind.upper() if ind != "stochastic rsi" else "stochastic RSI"} (format: <{set_user_dict[ind]}>)?')
-                    if not validity_check(sets, set_validity_dict[ind]):
-                        print(
-                            f'Please enter the correct settings format for {ind.upper() if ind != "stochastic rsi" else "stochastic RSI"}. ')
+            if param == 'indicator colors':
+                if ind == 'stochastic rsi':
+                    cols = [input('>>> What would you like the first stochastic RSI color to be (hex value)? '),
+                            input('>>> What would you like the second stochastic RSI color to be (hex value)? ')]
+                    if not validity_check(c, ['color', 'color']):
+                        print('Please enter valid hex values (ex : "#000000")')
                         continue
-                    userinfo[f'Def_{ind.upper() if ind != "stochastic rsi" else "Stochastic RSI"}_Set'] = sets
+                    userinfo['Def_Stochastic RSI_Col'] = ','.join(cols)
 
-                if param == 'Stock History':
-                    set = inp('Stock history is generated by checking stock prices (samples) with a specified interval '
-                              'between each sample. Would you like to change the number of samples or the length between '
-                              'each sample (length, interval)? ', ans=['length', 'interval'],
-                              rep_msg='Please enter a valid'
-                                      'input.')
-                    if set == 'length':
-                        userinfo['def_hist_length'] = inp(
-                            'How many samples would you like to be taken (time = samples * interval)? ', int_only=True,
-                            rep_msg='Please enter an integer.')
+                else:
+                    col = input('>>> What color would you like your indicator to be (hex value)? ')
+                    if not validity_check([c], ['color']):
+                        print('Please enter valid hex values (ex : "#000000")')
+                        continue
+                    userinfo[f'Def_{ind.upper()}_Col'] = ','.join(cols)
 
-                    if set == 'interval':
-                        userinfo['def_hist_interval'] = inp(
-                            'How long should be taken in between each sample? ',
-                            ans=['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo'],
-                            rep_msg=f'Please enter a valid time interval. Valid intervals : {ans}')
+            if param == 'indicator settings':
+                set_user_dict = {'rsi': 'period,time id', 'stochastic rsi': 'k window,d window,window,time id',
+                                 'sma': 'sma period (only parameter)', 'ema': 'ema period (only parameter)'}
+                set_validity_dict = {'rsi': [int, ['Close, High, Open, Low']], 'sma': [int, ['yes', 'no']],
+                                     'ema': [int],
+                                     'stochastic rsi': [int, int, int, ['Close, High, Open, Low']]}
+                sets = input(
+                    f'>>> What would you like your settings to be for {ind.upper() if ind != "stochastic rsi" else "stochastic RSI"} (format: <{set_user_dict[ind]}>)?')
+                if not validity_check(sets, set_validity_dict[ind]):
+                    print(
+                        f'Please enter the correct settings format for {ind.upper() if ind != "stochastic rsi" else "stochastic RSI"}. ')
+                    continue
+                userinfo[f'Def_{ind.upper() if ind != "stochastic rsi" else "Stochastic RSI"}_Set'] = sets
+
+            if param == 'Stock History':
+                set = inp('>>> Stock history is generated by checking stock prices (samples) with a specified '
+                          'interval between each sample. Would \nyou like to change the number of samples or the '
+                          'length between each sample (length, interval)? ', ans=['length', 'interval'],
+                          rep_msg='Please enter a valid input.')
+                if set == 'length':
+                    userinfo['def_hist_length'] = inp(
+                        '>>> How many samples would you like to be taken (time = samples * interval)? ',
+                        int_only=True, rep_msg='Please enter an integer.')
+
+                if set == 'interval':
+                    t_ints = ['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo']
+                    userinfo['def_hist_interval'] = inp(
+                        '>>> How long should be taken in between each sample? ',
+                        ans=['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo'],
+                        rep_msg=f'Please enter a valid time interval. Valid intervals : {t_ints}')
 
     return userinfo
 
@@ -221,11 +224,8 @@ def change_settings(username, userinfo):
     data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
     data.set_index('User', inplace=True)
     data.drop([username], inplace=True)
-    data.append(uinfo)
-
-    with open('UsersandSettings.csv', 'w') as users:
-        writer = csv.writer(users)
-        writer.writerows(data)
+    print(data, uinfo)
+    pd.concat([data, uinfo]).to_csv("UsersandSettings.csv", mode="w")
 
 
 if __name__ == '__main__':
