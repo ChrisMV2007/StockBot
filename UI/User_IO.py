@@ -159,7 +159,7 @@ def manual_graph(userinfo):
 
             if param == 'indicators':
                 inds = input('>>> What indicators would you like to use (RSI, Stochastic RSI, EMA, SMA)? ')
-                userinfo['Indicators'] = ','.join(
+                userinfo['Def_Indicators'] = ','.join(
                     [ind for ind in ['rsi', 'stochastic rsi', 'ema', 'sma'] if ind in inds.lower()])
 
             if param in ['indicator colors', 'indicator settings']:
@@ -222,8 +222,7 @@ def change_settings(username, userinfo):
     uinfo = manual_graph(userinfo)
 
     data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-    data.set_index('User', inplace=True)
-    data.drop([username], inplace=True)
+    data = data[data['User'] != username]
     print(data, uinfo)
     pd.concat([data, uinfo]).to_csv("UsersandSettings.csv", mode="w")
 
