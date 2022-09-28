@@ -234,7 +234,7 @@ def login_cycle():
         print('\n------------------------- \n')
         action = inp(
             '>>> Input "settings" to change default settings (including your watchlist), "chart" to launch charts '
-            '(on default settings), "manual chart" to manually input chart settings, "exit" to end program."',
+            '(on default settings), "manual chart" to manually input chart settings, "log out" to log out."',
             ans=['settings', 'chart', 'manual chart', 'exit'], rep_msg="Please enter a valid input")
         if action == 'settings':
             change_settings(username, userinfo)
@@ -244,7 +244,7 @@ def login_cycle():
                 'to launch a chart for a specific stock.', ans=['watchlist', 'stock'],
                 rep_msg='Please enter a valid input')
             if stock_watchlist == 'stock':
-                ticker = input('Input stock ticker (all caps): ')
+                ticker = input('>>> Input stock ticker (all caps): ')
                 auto_graph(SP.get_hist(ticker, userinfo['def_hist_length'], userinfo['def_hist_interval']), ticker,
                            userinfo)
             if stock_watchlist == 'watchlist':
@@ -252,12 +252,24 @@ def login_cycle():
                     auto_graph(SP.get_hist(ticker, userinfo['def_hist_length'], userinfo['def_hist_interval']), ticker,
                                userinfo)
         if action == 'manual chart':
-            ticker = input('Input stock ticker (all caps): ')
+            ticker = input('>>> Input stock ticker (all caps): ')
             manual_graph(userinfo)
             auto_graph(SP.get_hist(ticker, userinfo['def_hist_length'], userinfo['def_hist_interval']), ticker,
                        userinfo)
-        if action == 'exit':
-            active = False
+        if action == 'log out':
+            return
+
+
+def main():
+    on = True
+    while on:
+        login_cycle()
+        cont = inp('>>> Would you like to log in or exit the program ("log in", "exit")? ', ans=['log in', 'exit'],
+                   rep_msg='Please input "log in" or "exit".')
+        if cont == 'log in':
+            login_cycle()
+        if cont == 'exit':
+            return
 
 
 if __name__ == '__main__':
