@@ -223,10 +223,33 @@ def change_settings(username, userinfo):
 
     data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
     data = data[data['User'] != username]
-    print(data, uinfo)
     pd.concat([data, uinfo]).to_csv("UsersandSettings.csv", mode="w")
 
 
-if __name__ == '__main__':
+def login_cycle():
+    print('\n------------------------- \n')
     userinfo, username = login_signup()
-    change_settings(username, userinfo)
+    active = True
+    while active:
+        print('\n------------------------- \n')
+        action = inp(
+            '>>> Input "settings" to change default settings (including your watchlist), "chart" to launch charts '
+            '(on default settings), "manual chart" to manually input chart settings, "exit" to end program."',
+            ans=['settings', 'chart', 'manual chart', 'exit'], rep_msg="Please enter a valid input")
+        if action == 'settings':
+            change_settings(username, userinfo)
+        if action == 'chart':
+            stock_watchlist = inp(
+                '>>> Input "watchlist" to run charts for every stock in your watchlist, input "stock" '
+                'to launch a chart for a specific stock.', ans=['watchlist', 'stock'],
+                rep_msg='Please enter a valid input')
+            if stock_watchlist == 'stock':
+                auto_graph(SP.get_hist(input('Input stock ticker (all caps): '), userinfo['Def_hist_length'],
+                                       userinfo['def_hist_interval']))
+            if stock_watchlist == 'watchlist':
+                # FOR LATER
+                pass
+
+
+if __name__ == '__main__':
+    main()
