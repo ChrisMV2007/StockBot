@@ -30,35 +30,42 @@ def inp(ques, ans=None, int_only=False, yn=False, rep_msg=None, rep=False, no_an
                                                                                                    cond=cond)
 
 
+def try_replace(x):
+    try:
+        return int(x)
+    except:
+        return x
+
+
 def new_user(df, path):
     user = input('What would you like your username to be? ')
 
-    if user in list(df['User']):
+    if user in list(df['user']):
         print('This username is taken!')
         new_user(df, path)
 
     else:
-        row = df.loc[df['User'] == 'Default']
-        row['User'] = row['User'].replace(['Default'], f'{user}')
+        row = df.loc[df['user'] == 'Default']
+        row['user'] = row['user'].replace(['Default'], f'{user}')
         newuser = pd.DataFrame(row)
         users = pd.concat([df, newuser.iloc[0]], ignore_index=True)
         with open(path, 'a') as users:
             writer = csv.writer(users)
             writer.writerow(newuser.iloc[0])
         data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-        return data.loc[data['User'] == user], user
+        return data.loc[data['user'] == user], user
 
 
 def login(df, path):
-    user = input('What is your username? ')
+    user = input('>>> What is your username? ')
 
-    if user not in list(df['User']):
+    if user not in list(df['user']):
         print('This user does not exist!')
         login(df, path)
 
     else:
         data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-        return data.loc[data['User'] == user], user
+        return data.loc[data['user'] == user], user
 
 
 def login_signup():
@@ -72,14 +79,12 @@ def login_signup():
     if los == 'log in':
         userinfo, username = login(users, 'UsersandSettings.csv')
 
-    return userinfo, username  # los = username
+    # PLACEHOLDER FOR ACTUAL ALGORITHM
 
+    for ind, set in enumerate(userinfo):
+        userinfo[ind] = try_replace(i)
 
-def try_replace(x):
-    try:
-        return int(x)
-    except:
-        return x
+    return userinfo, username
 
 
 def auto_graph(hist, stockname, userinfo):
@@ -227,14 +232,13 @@ def change_settings(username, userinfo):
 
 
 def login_cycle():
-    print('\n------------------------- \n')
     userinfo, username = login_signup()
     active = True
     while active:
         print('\n------------------------- \n')
         action = inp(
             '>>> Input "settings" to change default settings (including your watchlist), "chart" to launch charts '
-            '(on default settings), "manual chart" to manually input chart settings, "log out" to log out."',
+            '(on default settings), "manual chart" to manually input chart settings, "log out" to log out." ',
             ans=['settings', 'chart', 'manual chart', 'exit'], rep_msg="Please enter a valid input")
         if action == 'settings':
             change_settings(username, userinfo)
@@ -254,7 +258,7 @@ def login_cycle():
         if action == 'manual chart':
             ticker = input('>>> Input stock ticker (all caps): ')
             manual_graph(userinfo)
-            auto_graph(SP.get_hist(ticker, userinfo['def_hist_length'], userinfo['def_hist_interval']), ticker,
+            auto_graph(SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval']), ticker,
                        userinfo)
         if action == 'log out':
             return
