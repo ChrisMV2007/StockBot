@@ -261,8 +261,7 @@ def login_cycle():
 
 
 def main():
-    on = True
-    while on:
+    while True:
         login_cycle()
         cont = inp('>>> Would you like to log in or exit the program ("log in", "exit")? ', ans=['log in', 'exit'],
                    rep_msg='Please input "log in" or "exit".')
