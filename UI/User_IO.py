@@ -65,7 +65,7 @@ def login(df, path):
 
     else:
         data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-        return data.loc[data['user'] == user], user
+        return (data.loc[data['user'] == user], user)
 
 
 def login_signup():
@@ -82,7 +82,13 @@ def login_signup():
     # PLACEHOLDER FOR ACTUAL ALGORITHM
 
     for ind, set in enumerate(userinfo):
-        userinfo[ind] = try_replace(i)
+        userinfo[ind] = try_replace(set)
+
+    userinfo.drop(data.filter(regex="Unnamed"), axis=1, inplace=True)
+    userinfo.drop(columns=[n for n in range(17)], inplace=True)
+
+    pd.set_option("display.max_columns", 100)
+    print(userinfo)
 
     return userinfo, username
 
@@ -227,8 +233,10 @@ def change_settings(username, userinfo):
     uinfo = manual_graph(userinfo)
 
     data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
-    data = data[data['User'] != username]
-    pd.concat([data, uinfo]).to_csv("UsersandSettings.csv", mode="w")
+    data = data[data['user'] != username]
+    print(pd.concat([data, uinfo.tolist()]))
+    if 0 == 1:
+        pd.concat([data, uinfo]).to_csv("UsersandSettings.csv", mode="w")
 
 
 def login_cycle():
