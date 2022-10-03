@@ -79,17 +79,16 @@ def login_signup():
     if los == 'log in':
         userinfo, username = login(users, 'UsersandSettings.csv')
 
-    # PLACEHOLDER FOR ACTUAL ALGORITHM
+    for i in ['user', 'watchlist', 'def_gtype', 'darkmode', 'def_indicators', 'def_rsi_set', 'def_stochastic rsi_set',
+              'def_ema_set', 'def_sma_set', 'def_rsi_col', 'def_stochastic rsi_col', 'def_ema_col', 'def_sma_col',
+              'mawhist', 'def_hist_length', 'def_hist_interval']:
+        if ',' not in userinfo[i]:
+            userinfo[i] = try_replace(userinfo[i])
+        elif ',' in userinfo[i]:
+            userinfo[i] = [try_replace(x) for x in userinfo[i].split(',')]
 
-    for ind, set in enumerate(userinfo):
-        userinfo[ind] = try_replace(set)
-
-    userinfo.drop(data.filter(regex="Unnamed"), axis=1, inplace=True)
+    userinfo.drop(userinfo.filter(regex="Unnamed"), axis=1, inplace=True)
     userinfo.drop(columns=[n for n in range(17)], inplace=True)
-
-    pd.set_option("display.max_columns", 100)
-    print(userinfo)
-
     return userinfo, username
 
 
