@@ -132,14 +132,20 @@ def manual_graph(userinfo):
         for ind, inp in enumerate(rsp.split(',')):
             if format[ind] == int:
                 try:
-                    x = int(rsp)
+                    x = int(inp)
                 except:
+                    print(
+                        f'Incorrect format: format required an integer, a non integer was input; {inp} was input intead.')
                     return False
             elif format[ind] == 'color':
-                if len(rsp) != 7 or rsp[0] != '#':
+                if len(inp) != 7 or rsp[0] != '#':
+                    print(
+                        f'Incorrect format: format required a hex value, which entails a hashtag followed by 6 base-16 numbers; {inp} was input instead')
                     return False
             else:
                 if rsp not in format[ind]:
+                    print(
+                        f'Incorrect format: format required a specific response; {format[ind]} were the value inputs, {rsp} was input instead')
                     return False
         return True
 
@@ -147,26 +153,31 @@ def manual_graph(userinfo):
     oneval_dict = {'graph type': 'def_gtype', 'dark mode': 'darkmode'}
     while param != 'finished':
         params = ['graph type', 'dark mode', 'indicators', 'indicator settings', 'indicator colors', 'stock history',
-                  'moving average location']
+                  'moving average location', 'watchlist']
         param = inp('\n>>> Which setting would you like to change ("options" for options, "finished" to exit)? ',
                     ans=['options', 'finished'] + params, rep_msg='Please input "options", "finished", or a setting')
         if param == 'options':
             print(f'Settings : {params}; some of these settings have sub settings.')
 
-        elif param in [param.lower() for param in params]:
+        elif param in [param for param in params]:
+
+            if param == 'watchlist':
+                userinfo['watchlist'] = input('Input your new watchlist (separate stocks with commas, '
+                                              'input as tickers in all caps; note that this setting has no error '
+                                              'detection): ')
 
             if param == 'moving average location':
                 userinfo['mawhist'] = inp(
                     '>>> Would you like your moving averages (sma/ema) to be displayed in the same graph as the stock '
                     'itself (yes or no)? ', yn=True)
 
-            if param in ['graph type', 'dark mode']:
-                val = inp(
-                    '>>> Would you like your graph to be displayed via line or candles? ' if param == 'graph type' else
-                    '>>> Would you like to use dark mode?', ans=['line', 'candles'] if param == 'graph type' else None,
-                    yn=True if param == 'dark mode' else None, rep_msg='Please input either "line" or "candles".' if
-                    param == 'graph type' else 'Please enter either "yes" or "no".')
-                userinfo[oneval_dict[val]] = val
+            if param == 'graph type':
+                userinfo['def_gtype'] = inp('>>> Would you like your graph to be displayed via line or candles? ',
+                                            ans=['line', 'candles'], rep_msg='Please input either "line" or "candles".')
+
+            if param == 'dark mode':
+                userinfo['darkmode'] = inp('>>> Would you like to use dark mode? ', yn=True,
+                                           rep_msg='Please enter either "yes" or "no".')
 
             if param == 'indicators':
                 inds = input('>>> What indicators would you like to use (RSI, Stochastic RSI, EMA, SMA)? ')
@@ -235,7 +246,6 @@ def change_settings(username, userinfo):
     data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
     data = data[data['user'] != username]
     data.drop(data.filter(regex="Unnamed"), axis=1, inplace=True)
-    print(pd.concat([data, uinfo])) # DEBUG
     pd.concat([data, uinfo]).to_csv("UsersandSettings.csv", mode="w")
 
 
