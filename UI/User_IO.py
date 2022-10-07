@@ -71,7 +71,7 @@ def login(df, path):
 
 
 def login_signup():
-    print('\n------------------------------ \n')
+    print('\n-----[LOGIN/SIGNUP]-----\n')
     users = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
     los = inp('>>> Would you like to log in or sign up (log in, sign up)? ', ['log in', 'sign up'],
               rep_msg='Please enter either "log in" or "sign up"')
@@ -126,7 +126,7 @@ def graph_watchlist(userinfo):
 
 
 def manual_graph(userinfo):
-    print('\n------------------------- ')
+    print('\n-----[SETTINGS INPUT]-----')
 
     def validity_check(rsp, format):
         for ind, inp in enumerate(rsp.split(',')):
@@ -253,11 +253,11 @@ def login_cycle():
     userinfo, username = login_signup()
     active = True
     while active:
-        print('\n------------------------- \n')
+        print('\n-----[MENU]-----\n')
         action = inp(
             '>>> Input "settings" to change default settings (including your watchlist), "chart" to launch charts '
             '(on default settings), "manual chart" to manually input chart settings, "log out" to log out." ',
-            ans=['settings', 'chart', 'manual chart', 'exit'], rep_msg="Please enter a valid input")
+            ans=['settings', 'chart', 'manual chart', 'exit', 'log out'], rep_msg="Please enter a valid input")
         if action == 'settings':
             change_settings(username, userinfo)
         if action == 'chart':
