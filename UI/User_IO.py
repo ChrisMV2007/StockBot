@@ -115,9 +115,10 @@ def auto_graph(hist, stockname, userinfo):
         col = userinfo[f'def_{i.lower()}_col']
         colors.append(col if ',' not in col else col.split(','))
 
-    return graph.graph(stock=stockname, hist=hist, type=userinfo['def_gtype'],
-                       dark_mode=True if userinfo['darkmode'] == 'yes' else False, indicators=indicators, inames=inames,
-                       ema_sma_w_hist=True if userinfo['mawhist'] == 'Y' else False, icolors=colors)
+    return graph.graph(stock=stockname, hist=hist, type=userinfo['def_gtype'].iloc[0],
+                       dark_mode=True if userinfo['darkmode'].iloc[0] == 'yes' else False, indicators=indicators,
+                       inames=inames,
+                       ema_sma_w_hist=True if userinfo['mawhist'].iloc[0] == 'Y' else False, icolors=colors)
 
 
 def graph_watchlist(userinfo):
