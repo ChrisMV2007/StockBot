@@ -121,8 +121,10 @@ def auto_graph(hist, stockname, userinfo):
 
 
 def graph_watchlist(userinfo):
-    return [auto_graph(SP.get_hist(s, userinfo['def_hist_days'], userinfo['def_hist_interval']), s, userinfo) for s in
-            userinfo['watchlist'].split(',')]
+    return [
+        auto_graph(SP.get_hist(s, int(userinfo['def_hist_days']), userinfo['def_hist_interval'].iloc[0]), s, userinfo)
+        for s in
+        userinfo['watchlist'].split(',')]
 
 
 def manual_graph(userinfo):
@@ -263,20 +265,21 @@ def login_cycle():
         if action == 'chart':
             stock_watchlist = inp(
                 '>>> Input "watchlist" to run charts for every stock in your watchlist, input "stock" '
-                'to launch a chart for a specific stock.', ans=['watchlist', 'stock'],
+                'to launch a chart for a specific stock. ', ans=['watchlist', 'stock'],
                 rep_msg='Please enter a valid input')
             if stock_watchlist == 'stock':
                 ticker = input('>>> Input stock ticker (all caps): ')
-                auto_graph(SP.get_hist(ticker, userinfo['def_hist_length'], userinfo['def_hist_interval']), ticker,
-                           userinfo)
+                hist = SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])
+                auto_graph(hist, ticker, userinfo)
             if stock_watchlist == 'watchlist':
                 for ticker in userinfo['watchlist'].split(','):
-                    auto_graph(SP.get_hist(ticker, userinfo['def_hist_length'], userinfo['def_hist_interval']), ticker,
-                               userinfo)
+                    hist = SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])
+                    auto_graph(hist, ticker, userinfo)
         if action == 'manual chart':
             ticker = input('>>> Input stock ticker (all caps): ')
             manual_graph(userinfo)
-            auto_graph(SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval']), ticker,
+            auto_graph(SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval']).iloc[0],
+                       ticker,
                        userinfo)
         if action == 'log out':
             return
