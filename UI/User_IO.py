@@ -94,7 +94,8 @@ def login_signup():
 
 
 def auto_graph(hist, stockname, userinfo):
-    inames = [ind for ind in ['SMA', 'EMA', 'Stochastic RSI', 'RSI'] if ind.lower() in userinfo['def_indicators'].iloc[0]]
+    inames = [ind for ind in ['SMA', 'EMA', 'Stochastic RSI', 'RSI'] if
+              ind.lower() in userinfo['def_indicators'].iloc[0]]
 
     if 'EMA' in inames:
         inames.remove('EMA')
@@ -288,19 +289,4 @@ def login_cycle():
             auto_graph(SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval']).iloc[0],
                        ticker, userinfo).show()
         if action == 'log out':
-            return
-
-
-def main():
-    while True:
-        login_cycle()
-        cont = inp('>>> Would you like to log in or exit the program ("log in", "exit")? ', ans=['log in', 'exit'],
-                   rep_msg='Please input "log in" or "exit".')
-        if cont == 'log in':
-            login_cycle()
-        if cont == 'exit':
-            return
-
-
-if __name__ == '__main__':
-    main()
+            returnpo
