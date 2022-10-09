@@ -35,12 +35,15 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
     if len(fig.get_axes()) > 1:
         axes = True
 
+    hist['Date'] = pd.to_datetime(hist['Date'])
+    date_format = mpdates.DateFormatter('%Y-%m-%d')
+    copy = hist.copy()
+    copy['Date'] = copy['Date'].map(mpdates.date2num)
+
     if axes:
         ax[0].set_xlabel('Date')
         ax[0].set_ylabel('Price')
         ax[0].set_title(f'{stock} {type[:1].capitalize() + type[1:]} Graph')
-        hist['Date'] = pd.to_datetime(hist['Date'])
-        date_format = mpdates.DateFormatter('%Y-%m-%d')
         ax[0].xaxis.set_major_formatter(date_format)
 
         if type == 'line':
@@ -49,8 +52,6 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
             ax[0].plot(hist['Date'], hist['Close'])
 
         if type == 'candles':
-            copy = hist.copy()
-            copy['Date'] = copy['Date'].map(mpdates.date2num)
             candlestick_ohlc(ax[0], copy.values, width=0.6, colorup='green', colordown='red', alpha=0.8)
 
         for index, indicator in enumerate(indicators):
@@ -74,39 +75,35 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
                 ax[index + 1].plot(hist['Date'][len(hist) - len(indicator):], indicator, color=color, label=label)
 
     else:
-        hist['Date'] = pd.to_datetime(hist['Date'])
-        date_format = mpdates.DateFormatter('%Y-%m-%d')
-        ax[0].xaxis.set_major_formatter(date_format)
+        ax.xaxis.set_major_formatter(date_format)
 
         if type == 'line':
-            ax[0].fill_between(hist['Date'], hist['Close'], where=hist['Close'] > 0, alpha=0.25, color='b',
+            ax.fill_between(hist['Date'], hist['Close'], where=hist['Close'] > 0, alpha=0.25, color='b',
                                interpolate=True)
-            ax[0].plot(hist['Date'], hist['Close'])
+            ax.plot(hist['Date'], hist['Close'])
 
         if type == 'candles':
-            copy = hist.copy()
-            copy['Date'] = copy['Date'].map(mpdates.date2num)
-            candlestick_ohlc(ax[0], copy.values, width=0.6, colorup='green', colordown='red', alpha=0.8)
+            candlestick_ohlc(ax, copy.values, width=0.6, colorup='green', colordown='red', alpha=0.8)
 
         for index, indicator in enumerate(indicators):
             index, color = index, icolors[index]
             label = inames[index]
             if label == 'Stochastic RSI':
-                ax[index + 1].plot(hist['Date'][len(hist) - len(indicator[0]):], indicator[0], color=color[0],
+                ax.plot(hist['Date'][len(hist) - len(indicator[0]):], indicator[0], color=color[0],
                                    label=label)
-                ax[index + 1].plot(hist['Date'][len(hist) - len(indicator[1]):], indicator[1], color=color[1],
+                ax.plot(hist['Date'][len(hist) - len(indicator[1]):], indicator[1], color=color[1],
                                    label=label)
-                ax[index + 1].fill_between(hist['Date'], -20, 20, color=color[0], alpha=0.25)
-                ax[index + 1].fill_between(hist['Date'], 80, 120, color=color[1], alpha=0.25)
+                ax.fill_between(hist['Date'], -20, 20, color=color[0], alpha=0.25)
+                ax.fill_between(hist['Date'], 80, 120, color=color[1], alpha=0.25)
             if inames[index] in ['EMA', 'SMA'] and ema_sma_w_hist:
                 index = -1
             else:
-                ax[index + 1].set_ylabel(inames[index])
+                ax.set_ylabel(inames[index])
             if label == 'RSI':
-                ax[index + 1].fill_between(hist['Date'], 10, 30, color=color, alpha=0.25)
-                ax[index + 1].fill_between(hist['Date'], 70, 90, color=color, alpha=0.25)
+                ax.fill_between(hist['Date'], 10, 30, color=color, alpha=0.25)
+                ax.fill_between(hist['Date'], 70, 90, color=color, alpha=0.25)
             if label != 'Stochastic RSI':
-                ax[index + 1].plot(hist['Date'][len(hist) - len(indicator):], indicator, color=color, label=label)
+                ax.plot(hist['Date'][len(hist) - len(indicator):], indicator, color=color, label=label)
 
     fig.autofmt_xdate()
     fig.tight_layout()
