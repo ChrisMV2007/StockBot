@@ -10,7 +10,3 @@ def main():
             UI.login_cycle()
         if cont == 'exit':
             return
-
-
-if __name__ == '__main__':
-    main()
