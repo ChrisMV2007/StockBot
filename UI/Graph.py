@@ -107,7 +107,6 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
 
     fig.autofmt_xdate()
     fig.tight_layout()
-    fig.legend(loc='lower left')
 
     return plt
 
