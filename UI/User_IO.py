@@ -94,7 +94,7 @@ def login_signup():
 
 
 def auto_graph(hist, stockname, userinfo):
-    inames = [ind for ind in ['SMA', 'EMA', 'Stochastic RSI', 'RSI'] if ind in userinfo['def_indicators']]
+    inames = [ind for ind in ['SMA', 'EMA', 'Stochastic RSI', 'RSI'] if ind.lower() in userinfo['def_indicators'].iloc[0]]
 
     if 'EMA' in inames:
         inames.remove('EMA')
@@ -109,10 +109,13 @@ def auto_graph(hist, stockname, userinfo):
         idict = {'SMA': Indicators.sma, 'EMA': Indicators.ema, 'RSI': Indicators.rsi,
                  'Stochastic RSI': Indicators.stochastic_rsi}
 
-        isettings = list(map(try_replace(try_replace, userinfo[f'def_{i.lower()}_set'].split(','))))
-        indicators.append(idict[i](var_iter=[hist] + [isettings]))
+        try:
+            isettings = list(map(try_replace, userinfo[f'def_{i.lower()}_set'].iloc[0].split(',')))
+        except:
+            isettings = list(map(try_replace, userinfo[f'def_{i.lower()}_set'].iloc[0]))
+        indicators.append(idict[i](var_iter=[hist] + isettings))
 
-        col = userinfo[f'def_{i.lower()}_col']
+        col = userinfo[f'def_{i.lower()}_col'].iloc[0]
         colors.append(col if ',' not in col else col.split(','))
 
     return graph.graph(stock=stockname, hist=hist, type=userinfo['def_gtype'].iloc[0],
@@ -263,6 +266,8 @@ def login_cycle():
             ans=['settings', 'chart', 'manual chart', 'exit', 'log out'], rep_msg="Please enter a valid input")
         if action == 'settings':
             change_settings(username, userinfo)
+            data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+            userinfo = (data.loc[data['user'] == user], user)
         if action == 'chart':
             stock_watchlist = inp(
                 '>>> Input "watchlist" to run charts for every stock in your watchlist, input "stock" '
@@ -271,17 +276,16 @@ def login_cycle():
             if stock_watchlist == 'stock':
                 ticker = input('>>> Input stock ticker (all caps): ')
                 hist = SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])
-                auto_graph(hist, ticker, userinfo)
+                auto_graph(hist, ticker, userinfo).show()
             if stock_watchlist == 'watchlist':
                 for ticker in userinfo['watchlist'].split(','):
                     hist = SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])
-                    auto_graph(hist, ticker, userinfo)
+                    auto_graph(hist, ticker, userinfo).show()
         if action == 'manual chart':
             ticker = input('>>> Input stock ticker (all caps): ')
             manual_graph(userinfo)
             auto_graph(SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval']).iloc[0],
-                       ticker,
-                       userinfo)
+                       ticker, userinfo).show()
         if action == 'log out':
             return
 
