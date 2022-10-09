@@ -1,14 +1,11 @@
-import StockPrices
 from matplotlib import pyplot as plt
 import pandas as pd
 
 
 class invalid_time_id(Exception):
-    class SalaryNotInRangeError(Exception):
-        def __init__(self, type):
-            self.salary = salary
-            super().__init__(
-                f"{type} is not a valid time time_id for stock price. Valid options are [Close, Open, High, Low]")
+    def __init__(self, type):
+        super().__init__(
+            f"{type} is not a valid time time_id for stock price. Valid options are [Close, Open, High, Low]")
 
 
 def TI_validity(type):
@@ -16,7 +13,9 @@ def TI_validity(type):
         raise invalid_time_id(type)
 
 
-def rsi(hist, period, time_id):
+def rsi(hist=None, period=None, time_id=None, var_iter=None):
+    if var_iter:
+        hist, period, time_id = var_iter
     TI_validity(time_id)
     hist = hist[time_id]
     close_hist = hist.diff()
@@ -32,7 +31,10 @@ def rsi(hist, period, time_id):
     return pd.Series(100 - (100 / (1 + RS)), name="RSI")
 
 
-def stochastic_rsi(hist, k_window, d_window, window, time_id):  # k=avg of the high/low, d=moving average of k
+def stochastic_rsi(hist=None, k_window=None, d_window=None, window=None, time_id=None,
+                   var_iter=None):  # k=avg of the high/low, d=moving average of k
+    if var_iter:
+        hist, k_window, d_window, window, time_id = var_iter
     TI_validity(time_id)
     hist = hist[time_id]
 
@@ -45,27 +47,22 @@ def stochastic_rsi(hist, k_window, d_window, window, time_id):  # k=avg of the h
 
     D = K.rolling(window=d_window, center=False).mean()
 
-    return K, D
+    return [K, D]
 
 
-def sma(hist, length):
+def sma(hist=None, length=None, var_iter=None):
+    if var_iter:
+        hist, length = var_iter
     reliance = hist['Close'].to_frame()
-    reliance['SMA30'] = reliance['Close'].rolling(length).mean()
+    reliance['SMA'] = reliance['Close'].rolling(length).mean()
     reliance.dropna(inplace=True)
-    return reliance
+    return reliance['SMA']
 
 
-def ema(hist, length):
+def ema(hist=None, length=None, var_iter=None):
+    if var_iter:
+        hist, length = var_iter
     reliance = hist['Close'].to_frame()
     reliance['EMA'] = reliance['Close'].ewm(span=length).mean()
     reliance.dropna(inplace=True)
-    return reliance
-
-
-if __name__ == '__main__':
-    hist = StockPrices.get_hist('MSFT', 59, '90m')
-    k, d = stochastic_rsi(hist, 3, 3, 20, 'Close')
-    fig = plt.figure('MSFT')
-    plt.plot([x for x in range(len(hist))], k)
-    plt.plot([x for x in range(len(hist))], d)
-    plt.show()
+    return reliance['EMA']
