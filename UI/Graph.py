@@ -28,7 +28,8 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
         plt.style.use('dark_background')
 
     fig, ax = plt.subplots(
-        nrows=len([x for x in inames if x not in ['ema', 'sma']]) + 1 if ema_sma_w_hist else len(indicators) + 1,
+        nrows=len([x for x in inames if x not in ['ema', 'EMA', 'sma', 'SMA']]) + 1 if ema_sma_w_hist else len(
+            indicators) + 1,
         ncols=1)
 
     axes = False
@@ -79,7 +80,7 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
 
         if type == 'line':
             ax.fill_between(hist['Date'], hist['Close'], where=hist['Close'] > 0, alpha=0.25, color='b',
-                               interpolate=True)
+                            interpolate=True)
             ax.plot(hist['Date'], hist['Close'])
 
         if type == 'candles':
@@ -90,9 +91,9 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
             label = inames[index]
             if label == 'Stochastic RSI':
                 ax.plot(hist['Date'][len(hist) - len(indicator[0]):], indicator[0], color=color[0],
-                                   label=label)
+                        label=label)
                 ax.plot(hist['Date'][len(hist) - len(indicator[1]):], indicator[1], color=color[1],
-                                   label=label)
+                        label=label)
                 ax.fill_between(hist['Date'], -20, 20, color=color[0], alpha=0.25)
                 ax.fill_between(hist['Date'], 80, 120, color=color[1], alpha=0.25)
             if inames[index] in ['EMA', 'SMA'] and ema_sma_w_hist:
@@ -115,5 +116,5 @@ if __name__ == '__main__':  # Example Graph
     hist = get_hist('AAPL', 100, '1d')
     graph('AAPL', hist, 'candles', dark_mode=True,
           indicators=[ind.rsi(hist, 14, 'Close'), ind.stochastic_rsi(hist, 3, 3, 5, 'Close'), ind.sma(hist, 20),
-                      ind.ema(hist, 14)], inames=['RSI', 'Stochastic RSI', 'SMA', 'EMA'], ema_sma_w_hist=True,
+                      ind.ema(hist, 14)], inames=['RSI', 'Stochastic RSI', 'SMA', 'EMA'], ema_sma_w_hist='yes',
           icolors=['#A865C9', ['#FBBF77', 'b'], '#FFD580', '#FFFFE0']).show()
