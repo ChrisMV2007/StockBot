@@ -112,10 +112,11 @@ def auto_graph(hist, stockname, userinfo):
         try:
             isettings = list(map(try_replace, userinfo[f'def_{i.lower()}_set'].iloc[0].split(',')))
         except:
-            isettings = list(map(try_replace, userinfo[f'def_{i.lower()}_set'].iloc[0]))
+            isettings = [try_replace(userinfo[f'def_{i.lower()}_set'].iloc[0])]
         indicators.append(idict[i](var_iter=[hist] + isettings))
 
         col = userinfo[f'def_{i.lower()}_col'].iloc[0]
+        print(col)
         colors.append(col if ',' not in col else col.split(','))
 
     return graph.graph(stock=stockname, hist=hist, type=userinfo['def_gtype'].iloc[0],
