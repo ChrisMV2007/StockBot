@@ -119,7 +119,6 @@ def auto_graph(hist, stockname, userinfo):
         indicators.append(idict[i](var_iter=[hist] + isettings))
 
         col = userinfo[f'def_{i.lower()}_col'].iloc[0]
-        print(col)
         colors.append(col if ',' not in col else col.split(','))
 
     return graph.graph(stock=stockname, hist=hist, type=userinfo['def_gtype'].iloc[0],
@@ -271,7 +270,7 @@ def login_cycle():
         if action == 'settings':
             change_settings(username, userinfo)
             data = pd.read_csv(csv_dir, encoding="windows_1258")
-            userinfo = (data.loc[data['user'] == user], user)
+            userinfo = (data.loc[data['user'] == username], username)
         if action == 'chart':
             stock_watchlist = inp(
                 '>>> Input "watchlist" to run charts for every stock in your watchlist, input "stock" '
