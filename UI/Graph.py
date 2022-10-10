@@ -1,8 +1,8 @@
 from mplfinance.original_flavor import candlestick_ohlc
-from Backend.StockPrices import get_hist
+from UI.Backend.StockPrices import get_hist
 from matplotlib import pyplot as plt
 import matplotlib.dates as mpdates
-import Backend.Indicators as ind
+import UI.Backend.Indicators as ind
 import pandas as pd
 
 pd.set_option('mode.chained_assignment', None)
