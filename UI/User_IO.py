@@ -1,10 +1,15 @@
 import pandas as pd
-import Backend.StockPrices as SP
-import Backend.Indicators as Indicators
-import Graph as graph
+import UI.Backend.StockPrices as SP
+import UI.Backend.Indicators as Indicators
+import UI.Graph as graph
 import csv
 
 pd.set_option('display.max_columns', 100)
+
+if __name__ == '__main__':
+    csv_dir = 'UsersandSettings.csv'
+else:
+    csv_dir == 'UI.UserandSettings.csv'
 
 
 def inp(ques, ans=None, int_only=False, yn=False, rep_msg=None, rep=False, no_ans=False, cond='_'):
@@ -54,7 +59,7 @@ def new_user(df, path):
         with open(path, 'a') as users:
             writer = csv.writer(users)
             writer.writerow(newuser.iloc[0])
-        data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+        data = pd.read_csv(csv_dir, encoding="windows_1258")
         return data.loc[data['user'] == user], user
 
 
@@ -66,20 +71,20 @@ def login(df, path):
         login(df, path)
 
     else:
-        data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+        data = pd.read_csv(csv_dir, encoding="windows_1258")
         return (data.loc[data['user'] == user], user)
 
 
 def login_signup():
     print('\n-----[LOGIN/SIGNUP]-----\n')
-    users = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+    users = pd.read_csv(csv_dir, encoding="windows_1258")
     los = inp('>>> Would you like to log in or sign up (log in, sign up)? ', ['log in', 'sign up'],
               rep_msg='Please enter either "log in" or "sign up"')
 
     if los == 'sign up':
-        userinfo, username = new_user(users, 'UsersandSettings.csv')
+        userinfo, username = new_user(users, csv_dir)
     if los == 'log in':
-        userinfo, username = login(users, 'UsersandSettings.csv')
+        userinfo, username = login(users, csv_dir)
 
     for i in ['user', 'watchlist', 'def_gtype', 'darkmode', 'def_indicators', 'def_rsi_set', 'def_stochastic rsi_set',
               'def_ema_set', 'def_sma_set', 'def_rsi_col', 'def_stochastic rsi_col', 'def_ema_col', 'def_sma_col',
@@ -251,10 +256,10 @@ def manual_graph(userinfo):
 def change_settings(username, userinfo):
     uinfo = manual_graph(userinfo)
 
-    data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+    data = pd.read_csv(csv_dir, encoding="windows_1258")
     data = data[data['user'] != username]
     data.drop(data.filter(regex="Unnamed"), axis=1, inplace=True)
-    pd.concat([data, uinfo]).to_csv("UsersandSettings.csv", mode="w")
+    pd.concat([data, uinfo]).to_csv(csv_dir, mode="w")
 
 
 def login_cycle():
@@ -268,7 +273,7 @@ def login_cycle():
             ans=['settings', 'chart', 'manual chart', 'exit', 'log out'], rep_msg="Please enter a valid input")
         if action == 'settings':
             change_settings(username, userinfo)
-            data = pd.read_csv('UsersandSettings.csv', encoding="windows_1258")
+            data = pd.read_csv(csv_dir, encoding="windows_1258")
             userinfo = (data.loc[data['user'] == user], user)
         if action == 'chart':
             stock_watchlist = inp(
@@ -289,4 +294,4 @@ def login_cycle():
             auto_graph(SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval']).iloc[0],
                        ticker, userinfo).show()
         if action == 'log out':
-            returnpo
+            return
