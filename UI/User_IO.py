@@ -6,10 +6,7 @@ import csv
 
 pd.set_option('display.max_columns', 100)
 
-if __name__ == '__main__':
-    csv_dir = 'UsersandSettings.csv'
-else:
-    csv_dir = 'UI.UserandSettings.csv'
+csv_dir = 'UsersandSettings.csv'
 
 
 def inp(ques, ans=None, int_only=False, yn=False, rep_msg=None, rep=False, no_ans=False, cond='_'):
