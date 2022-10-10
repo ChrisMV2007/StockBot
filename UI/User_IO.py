@@ -138,7 +138,10 @@ def manual_graph(userinfo):
     print('\n-----[SETTINGS INPUT]-----')
 
     def validity_check(rsp, format):
-        for ind, inp in enumerate(rsp.split(',')):
+        if not isinstance(rsp, list):
+            rsp = rsp.split(',')
+
+        for ind, inp in enumerate(rsp):
             if format[ind] == int:
                 try:
                     x = int(inp)
@@ -203,17 +206,17 @@ def manual_graph(userinfo):
                 if ind == 'stochastic rsi':
                     cols = [input('>>> What would you like the first stochastic RSI color to be (hex value)? '),
                             input('>>> What would you like the second stochastic RSI color to be (hex value)? ')]
-                    if not validity_check(c, ['color', 'color']):
+                    if not validity_check(cols, ['color', 'color']):
                         print('Please enter valid hex values (ex : "#000000")')
                         continue
                     userinfo['def_stochastic rsi_col'] = ','.join(cols)
 
                 else:
                     col = input('>>> What color would you like your indicator to be (hex value)? ')
-                    if not validity_check([c], ['color']):
+                    if not validity_check([col], ['color']):
                         print('Please enter valid hex values (ex : "#000000")')
                         continue
-                    userinfo[f'def_{ind}_col'] = ','.join(cols)
+                    userinfo[f'def_{ind}_col'] = col
 
             if param == 'indicator settings':
                 set_user_dict = {'rsi': 'period,time id', 'stochastic rsi': 'k window,d window,window,time id',
