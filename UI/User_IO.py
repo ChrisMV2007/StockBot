@@ -96,10 +96,8 @@ def login_signup():
 
 
 def auto_graph(hist, stockname, userinfo):
-    print('progress 2')
     inames = [ind for ind in ['SMA', 'EMA', 'Stochastic RSI', 'RSI'] if
               ind.lower() in userinfo['def_indicators'].iloc[0]]
-    print('progress 3')
 
     if 'EMA' in inames:
         inames.remove('EMA')
@@ -120,12 +118,8 @@ def auto_graph(hist, stockname, userinfo):
             isettings = [try_replace(userinfo[f'def_{i.lower()}_set'].iloc[0])]
         indicators.append(idict[i](var_iter=[hist] + isettings))
 
-        print('progress 4')
-
         col = userinfo[f'def_{i.lower()}_col'].iloc[0]
         colors.append(col if ',' not in col else col.split(','))
-
-    print('progress 5')
 
     return graph.graph(stock=stockname, hist=hist, type=userinfo['def_gtype'].iloc[0],
                        dark_mode=True if userinfo['darkmode'].iloc[0] == 'yes' else False, indicators=indicators,
@@ -296,9 +290,7 @@ def login_cycle():
         if action == 'manual chart':
             ticker = input('>>> Input stock ticker (all caps): ')
             temp_userinfo = manual_graph(userinfo)
-            print('progress 1')
             SP.get_hist(ticker, int(temp_userinfo['def_hist_length']), temp_userinfo['def_hist_interval'])
-            print('JIOWEF')
             auto_graph(
                 SP.get_hist(ticker, int(temp_userinfo['def_hist_length']), temp_userinfo['def_hist_interval']),
                 ticker, temp_userinfo).show()
