@@ -290,9 +290,8 @@ def login_cycle():
         if action == 'manual chart':
             ticker = input('>>> Input stock ticker (all caps): ')
             temp_userinfo = manual_graph(userinfo)
-            SP.get_hist(ticker, int(temp_userinfo['def_hist_length']), temp_userinfo['def_hist_interval'])
             auto_graph(
-                SP.get_hist(ticker, int(temp_userinfo['def_hist_length']), temp_userinfo['def_hist_interval']),
+                SP.get_hist(ticker, int(temp_userinfo['def_hist_length']), temp_userinfo['def_hist_interval'].iloc[0]),
                 ticker, temp_userinfo).show()
         if action == 'log out':
             return
