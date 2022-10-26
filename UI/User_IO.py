@@ -325,7 +325,12 @@ def login_cycle():
                                 bound = [
                                     input('>>> What would like the bound for the k window to be (ex: >25 or <30): '),
                                     input('>>> What would like the bound for the d window to be (ex: >25 or <30): ')]
-                                if bound[0][0] in ['>', '<'] and bound[1][0] in ['>', '<'] and bound[0][1:]
+                                if bound[0][0] in ['>', '<'] and bound[1][0] in ['>', '<'] and int_check(
+                                        bound[0][1:]) and int_check(bound[1][1:]):
+                                    fmt = True
+                                else:
+                                    print(
+                                        'Please enter your bounds with proper formatting (">" or "<" followed by an integer value).')
 
                         IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(
                             SP.get_hist(ticker, int(userinfo['def_hist_length']),
