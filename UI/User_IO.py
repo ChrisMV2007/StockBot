@@ -135,6 +135,14 @@ def graph_watchlist(userinfo):
         userinfo['watchlist'].split(',')]
 
 
+def int_check(rsp):
+    if format[ind] == int:
+        try:
+            x = int(inp)
+            return True
+        except:
+            return False
+
 
 def validity_check(rsp, format):
     if not isinstance(rsp, list):
