@@ -2,6 +2,7 @@ import pandas as pd
 import UI.Backend.StockPrices as SP
 import UI.Backend.Indicators as Indicators
 import UI.Graph as graph
+import UI.Backend.IndicatorAnalysis as IndAnal
 import csv
 
 pd.set_option('display.max_columns', 100)
@@ -134,32 +135,34 @@ def graph_watchlist(userinfo):
         userinfo['watchlist'].split(',')]
 
 
+
+def validity_check(rsp, format):
+    if not isinstance(rsp, list):
+        rsp = rsp.split(',')
+
+    for ind, inp in enumerate(rsp):
+        if format[ind] == int:
+            try:
+                x = int(inp)
+            except:
+                print(
+                    f'Incorrect format: format required an integer, a non integer was input; {inp} was input intead.')
+                return False
+        elif format[ind] == 'color':
+            if len(inp) != 7 or inp[0] != '#':
+                print(
+                    f'Incorrect format: format required a hex value, which entails a hashtag followed by 6 base-16 numbers; {inp} was input instead')
+                return False
+        else:
+            if inp not in format[ind]:
+                print(
+                    f'Incorrect format: format required a specific response; {format[ind]} were the valid inputs, {inp} was input instead')
+                return False
+    return True
+
+
 def manual_graph(userinfo):
     print('\n-----[SETTINGS INPUT]-----')
-
-    def validity_check(rsp, format):
-        if not isinstance(rsp, list):
-            rsp = rsp.split(',')
-
-        for ind, inp in enumerate(rsp):
-            if format[ind] == int:
-                try:
-                    x = int(inp)
-                except:
-                    print(
-                        f'Incorrect format: format required an integer, a non integer was input; {inp} was input intead.')
-                    return False
-            elif format[ind] == 'color':
-                if len(inp) != 7 or inp[0] != '#':
-                    print(
-                        f'Incorrect format: format required a hex value, which entails a hashtag followed by 6 base-16 numbers; {inp} was input instead')
-                    return False
-            else:
-                if inp not in format[ind]:
-                    print(
-                        f'Incorrect format: format required a specific response; {format[ind]} were the valid inputs, {inp} was input instead')
-                    return False
-        return True
 
     param = None
     oneval_dict = {'graph type': 'def_gtype', 'dark mode': 'darkmode'}
@@ -269,7 +272,8 @@ def login_cycle():
         action = inp(
             '>>> Input "settings" to change default settings (including your watchlist), "chart" to launch charts '
             '(on default settings), "manual chart" to manually input chart settings, "log out" to log out." ',
-            ans=['settings', 'chart', 'manual chart', 'exit', 'log out'], rep_msg="Please enter a valid input")
+            ans=['settings', 'indicator analysis', 'chart', 'manual chart', 'exit', 'log out'],
+            rep_msg="Please enter a valid input")
         if action == 'settings':
             change_settings(username, userinfo)
             data = pd.read_csv(csv_dir, encoding="windows_1258")
@@ -284,7 +288,7 @@ def login_cycle():
                 hist = SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])
                 auto_graph(hist, ticker, userinfo).show()
             if stock_watchlist == 'watchlist':
-                for ticker in userinfo['watchlist'].split(','):
+                for ticker in userinfo['watchlist'].iloc[0].split(','):
                     hist = SP.get_hist(ticker, int(userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])
                     auto_graph(hist, ticker, userinfo).show()
         if action == 'manual chart':
@@ -293,5 +297,31 @@ def login_cycle():
             auto_graph(
                 SP.get_hist(ticker, int(temp_userinfo['def_hist_length']), temp_userinfo['def_hist_interval'].iloc[0]),
                 ticker, temp_userinfo).show()
+        if action == 'indicator analysis':
+            SoW = inp('>>> Input "watchlist" to perform an indicator-based analysis on your whole watchlist, input "'
+                      'stock" to just do a singular stock. ', ans=['watchlist', 'stock'],
+                      rep_msg='Please enter a valid input.')
+            if SoW == 'stock':
+                ticker = input('>>> Input the ticker of the stock you want to analyse (all caps): ')
+                inds = [ind for ind in input(
+                    '>>> Input the indicators you would like to use (rsi, stochastic rsi, ema, sma, separate indicators with commas): ').split(
+                    ',') if ind in ['rsi', 'stochastic rsi', 'sma', 'ema']]
+                for ind in inds:
+                    if ind == 'stochastic rsi':
+                        KoD = inp(
+                            ">>> Would you like to use stochastic rsi's K window, D window, or both ('k', 'd', or 'kd')? ",
+                            ans=['k', 'd', 'kd'], rep_msg='Please enter a valid input.')
+                        fmt = False
+                        if KoD == 'kd':
+                            while not fmt:
+                                bound = [
+                                    input('>>> What would like the bound for the k window to be (ex: >25 or <30): '),
+                                    input('>>> What would like the bound for the d window to be (ex: >25 or <30): ')]
+                                if bound[0][0] in ['>', '<'] and bound[1][0] in ['>', '<'] and bound[0][1:]
+
+                        IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(
+                            SP.get_hist(ticker, int(userinfo['def_hist_length']),
+                                        userinfo['def_hist_interval'].iloc[0]), bound, KoD))
+
         if action == 'log out':
             return
