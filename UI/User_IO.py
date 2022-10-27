@@ -344,9 +344,9 @@ def login_cycle():
                                                                                                'def_stochastic rsi_set']),
                                                         bound, KoD))
                     else:
-                        idict = {'SMA': Indicators.sma, 'EMA': Indicators.ema, 'RSI': Indicators.rsi,
-                                 'Stochastic RSI': Indicators.stochastic_rsi}
-                        
+                        idict = {'sma': Indicators.sma, 'ema': Indicators.ema, 'rsi': Indicators.rsi,
+                                 'stochastic rsi': Indicators.stochastic_rsi}
+
                         fmt = False
                         while not fmt:
                             bound = input(f'>>> What would like the bound for {ind} to be (ex: >5 or <30): ')
@@ -359,13 +359,9 @@ def login_cycle():
                         try:
                             isettings = list(map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
                         except:
-                            isettings = [try_replace(userinfo[f'def_{i.lower()}_set'].iloc[0])]
+                            isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
-                        indBools.append(
-                            IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(var_iter=[SP.get_hist(ticker, int(
-                                userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + userinfo[
-                                                                                               'def_stochastic rsi_set']),
-                                                        bound, KoD))
+                        indBools.append(idict[ind](var_iter=[hist] + isettings))
 
         if action == 'log out':
             return
