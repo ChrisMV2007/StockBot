@@ -362,7 +362,7 @@ def login_cycle():
                         except:
                             isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
-                        indBools.append(idict[ind](var_iter=[hist] + isettings))
+                        indBools.append(IndAnal.rsi_anal(idict[ind](var_iter=[hist] + isettings), bound))
                 if functools.reduce(lambda x, y: x * y, indBools):
                     print(f'{ticker} has cleared your bounds. ')
 
