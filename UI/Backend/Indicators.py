@@ -66,8 +66,3 @@ def ema(hist=None, length=None, var_iter=None):
     reliance['EMA'] = reliance['Close'].ewm(span=length).mean()
     reliance.dropna(inplace=True)
     return reliance['EMA']
-
-import StockPrices
-
-if __name__ == '__main__':
-    print(stochastic_rsi(StockPrices.get_hist('AAPl', 30, '1d'), 3, 3, 5, 'Close'))
