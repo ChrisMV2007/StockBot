@@ -344,7 +344,7 @@ def login_cycle():
                                 userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + userinfo[
                                                                                                'def_stochastic rsi_set']),
                                                         bound, KoD))
-                    else:
+                    elif ind == 'rsi':
                         idict = {'sma': Indicators.sma, 'ema': Indicators.ema, 'rsi': Indicators.rsi,
                                  'stochastic rsi': Indicators.stochastic_rsi}
 
