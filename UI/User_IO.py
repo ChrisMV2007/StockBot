@@ -314,6 +314,7 @@ def login_cycle():
                 inds = [ind for ind in input(
                     '>>> Input the indicators you would like to use (rsi, stochastic rsi, ema, sma, separate indicators with commas): ').split(
                     ',') if ind in ['rsi', 'stochastic rsi', 'sma', 'ema']]
+                indBools = []
                 for ind in inds:
                     if ind == 'stochastic rsi':
                         KoD = inp(
@@ -323,8 +324,8 @@ def login_cycle():
                         if KoD == 'kd':
                             while not fmt:
                                 bound = [
-                                    input('>>> What would like the bound for the k window to be (ex: >25 or <30): '),
-                                    input('>>> What would like the bound for the d window to be (ex: >25 or <30): ')]
+                                    input('>>> What would like the bound for the k window to be (ex: >3 or <5): '),
+                                    input('>>> What would like the bound for the d window to be (ex: >3 or <5): ')]
                                 if bound[0][0] in ['>', '<'] and bound[1][0] in ['>', '<'] and int_check(
                                         bound[0][1:]) and int_check(bound[1][1:]):
                                     fmt = True
@@ -337,10 +338,34 @@ def login_cycle():
                         except:
                             isettings = [try_replace(userinfo[f'def_{i.lower()}_set'].iloc[0])]
 
-                        IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(var_iter=[SP.get_hist(ticker, int(
-                            userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + userinfo[
-                                                                                           'def_stochastic rsi_set']),
-                                                    bound, KoD)
+                        indBools.append(
+                            IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(var_iter=[SP.get_hist(ticker, int(
+                                userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + userinfo[
+                                                                                               'def_stochastic rsi_set']),
+                                                        bound, KoD))
+                    else:
+                        idict = {'SMA': Indicators.sma, 'EMA': Indicators.ema, 'RSI': Indicators.rsi,
+                                 'Stochastic RSI': Indicators.stochastic_rsi}
+                        
+                        fmt = False
+                        while not fmt:
+                            bound = input(f'>>> What would like the bound for {ind} to be (ex: >5 or <30): ')
+                            if bound[0] in ['>', '<'] and int_check(bound[1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+
+                        try:
+                            isettings = list(map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                        except:
+                            isettings = [try_replace(userinfo[f'def_{i.lower()}_set'].iloc[0])]
+
+                        indBools.append(
+                            IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(var_iter=[SP.get_hist(ticker, int(
+                                userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + userinfo[
+                                                                                               'def_stochastic rsi_set']),
+                                                        bound, KoD))
 
         if action == 'log out':
             return
