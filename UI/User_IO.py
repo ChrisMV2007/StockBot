@@ -4,6 +4,7 @@ import UI.Backend.Indicators as Indicators
 import UI.Graph as graph
 import UI.Backend.IndicatorAnalysis as IndAnal
 import csv
+import functools
 
 pd.set_option('display.max_columns', 100)
 
@@ -362,6 +363,8 @@ def login_cycle():
                             isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
                         indBools.append(idict[ind](var_iter=[hist] + isettings))
+                if functools.reduce(lambda x, y: x * y, indBools):
+                    print(f'{ticker} has cleared your bounds. ')
 
         if action == 'log out':
             return
