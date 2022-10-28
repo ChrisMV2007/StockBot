@@ -5,6 +5,7 @@ import UI.Graph as graph
 import UI.Backend.IndicatorAnalysis as IndAnal
 import csv
 import functools
+import yfinance as yf
 
 pd.set_option('display.max_columns', 100)
 
@@ -363,6 +364,31 @@ def login_cycle():
                             isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
                         indBools.append(IndAnal.rsi_anal(idict[ind](var_iter=[hist] + isettings), bound))
+                    else:
+                        boundnum = inp(f'Would you like to set 1 or 2 bounds for {ind} ("1" or "2")? ', ans=['1', '2'],
+                                       rep_msg='Please enter either a 1 or a 2')
+                        if boundnum == '1':
+                            fmt = False
+                            while not fmt:
+                                bound = input(f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
+                                if bound[0] in ['>', '<'] and int_check(bound[1:]):
+                                    fmt = True
+                                else:
+                                    print(
+                                        'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+
+                        try:
+                            isettings = list(map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                        except:
+                            isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+
+                        ticker_yahoo = yf.Ticker(ticker)
+                        data = ticker_yahoo.history()
+                        last_quote = data['Close'].iloc[-1]
+
+                        indBools.append(IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound, ))
+                        if boundnum == '2':
+                            pass
                 if functools.reduce(lambda x, y: x * y, indBools):
                     print(f'{ticker} has cleared your bounds. ')
 
