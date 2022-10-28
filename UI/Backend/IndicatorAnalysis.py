@@ -11,27 +11,20 @@ def stochastic_rsi_anal(stochastic_rsi, bound, KoD):  # K comes first
             f'{stochastic_rsi[0][stochastic_rsi[0].size - 1]} {bound[0][0]} {bound[0][1:]}') and eval(
             f'{stochastic_rsi[1][stochastic_rsi[1].size - 1]} {bound[1][0]} {bound[1][1:]}') else False
     if KoD.len == 1:
-        if KoD == 'K':
+        if KoD == 'k':
             if bound[0][0] == '>':
                 return stochastic_rsi[0][stochastic_rsi[0].size - 1] > bound[0][1:]
             if bound[0][0] == '<':
                 return stochastic_rsi[0][stochastic_rsi[0].size - 1] < bound[0][1:]
-        if KoD == 'D':
+        if KoD == 'd':
             if bound[1][0] == '>':
                 return stochastic_rsi[1][stochastic_rsi[1].size - 1] > bound[0][1:]
             if bound[1][0] == '<':
                 return stochastic_rsi[1][stochastic_rsi[1].size - 1] < bound[0][1:]
 
 
-def ema_anal(ema, bound):
+def ma_anal(ma, bound, price):  # input price as a % above or below
     if bound[0] == '>':
-        return ema[ema.size - 1] > bound[1:]
+        return (ma[ma.size - 1] - price) / price > bound[1:] / 100
     if bound[0] == '<':
-        return ema[ema.size - 1] < bound[1:]
-
-
-def sma_anal(sma, bound):
-    if bound[0] == '>':
-        return sma[sma.size - 1] > bound[1:]
-    if bound[0] == '<':
-        return sma[sma.size - 1] < bound[1:]
+        return (ma[ma.size - 1] - price) / price < bound[1:] / 100
