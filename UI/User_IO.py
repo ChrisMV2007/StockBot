@@ -370,7 +370,8 @@ def login_cycle():
                         if boundnum == '1':
                             fmt = False
                             while not fmt:
-                                bound = input(f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
+                                bound = input(
+                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
                                 if bound[0] in ['>', '<'] and int_check(bound[1:]):
                                     fmt = True
                                 else:
@@ -382,11 +383,10 @@ def login_cycle():
                         except:
                             isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
-                        ticker_yahoo = yf.Ticker(ticker)
-                        data = ticker_yahoo.history()
-                        last_quote = data['Close'].iloc[-1]
-
-                        indBools.append(IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound, ))
+                        hist = yf.Ticker(ticker).history()
+                        last_quote = hist['Close'].iloc[-1]
+                        indBools.append(
+                            IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound, float(last_quote)))
                         if boundnum == '2':
                             pass
                 if functools.reduce(lambda x, y: x * y, indBools):
