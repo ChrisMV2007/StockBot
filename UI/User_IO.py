@@ -138,12 +138,11 @@ def graph_watchlist(userinfo):
 
 
 def int_check(rsp):
-    if format[ind] == int:
-        try:
-            x = int(inp)
-            return True
-        except:
-            return False
+    try:
+        x = int(rsp)
+        return True
+    except:
+        return False
 
 
 def validity_check(rsp, format):
@@ -281,7 +280,8 @@ def login_cycle():
         print('\n-----[MENU]-----\n')
         action = inp(
             '>>> Input "settings" to change default settings (including your watchlist), "chart" to launch charts '
-            '(on default settings), "manual chart" to manually input chart settings, "log out" to log out." ',
+            '(on default settings), "manual chart" to manually input chart settings,\n"indicator analysis" to perform '
+            'indicator analysis, "log out" to log out." ',
             ans=['settings', 'indicator analysis', 'chart', 'manual chart', 'exit', 'log out'],
             rep_msg="Please enter a valid input")
         if action == 'settings':
@@ -378,17 +378,47 @@ def login_cycle():
                                     print(
                                         'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
 
-                        try:
-                            isettings = list(map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
-                        except:
-                            isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+                            try:
+                                isettings = list(map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                            except:
+                                isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
-                        hist = yf.Ticker(ticker).history()
-                        last_quote = hist['Close'].iloc[-1]
-                        indBools.append(
-                            IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound, float(last_quote)))
+                            hist = yf.Ticker(ticker).history()
+                            last_quote = hist['Close'].iloc[-1]
+                            indBools.append(
+                                IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound, float(last_quote)))
                         if boundnum == '2':
-                            pass
+                            fmt = False
+                            while not fmt:
+                                bound1 = input(
+                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
+                                if bound1[0] in ['>', '<'] and int_check(bound1[1:]):
+                                    fmt = True
+                                else:
+                                    print(
+                                        'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                            fmt = False
+                            while not fmt:
+                                bound1 = input(
+                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
+                                if bound1[0] in ['>', '<'] and int_check(bound1[1:]):
+                                    fmt = True
+                                else:
+                                    print(
+                                        'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+
+                            try:
+                                isettings = list(
+                                    map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                            except:
+                                isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+
+                            hist = yf.Ticker(ticker).history()
+                            last_quote = hist['Close'].iloc[-1]
+                            indBools.append(
+                                IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound1, float(last_quote)))
+                            indBools.append(
+                                IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound2, float(last_quote)))
                 if functools.reduce(lambda x, y: x * y, indBools):
                     print(f'{ticker} has cleared your bounds. ')
 
