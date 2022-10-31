@@ -319,6 +319,8 @@ def login_cycle():
                     ',') if ind in ['rsi', 'stochastic rsi', 'sma', 'ema']]
                 indBools = []
                 for ind in inds:
+                    idict = {'sma': Indicators.sma, 'ema': Indicators.ema, 'rsi': Indicators.rsi,
+                             'stochastic rsi': Indicators.stochastic_rsi}
                     if ind == 'stochastic rsi':
                         KoD = inp(
                             ">>> Would you like to use stochastic rsi's K window, D window, or both ('k', 'd', or 'kd')? ",
@@ -348,9 +350,6 @@ def login_cycle():
                                                                                                0].split(',')),
                                                         bound, KoD))
                     elif ind == 'rsi':
-                        idict = {'sma': Indicators.sma, 'ema': Indicators.ema, 'rsi': Indicators.rsi,
-                                 'stochastic rsi': Indicators.stochastic_rsi}
-
                         fmt = False
                         while not fmt:
                             bound = input(f'>>> What would like the bound for {ind} to be (ex: >5 or <30): ')
@@ -368,13 +367,14 @@ def login_cycle():
                         indBools.append(IndAnal.rsi_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
                             userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings), bound))
                     else:
-                        boundnum = inp(f'Would you like to set 1 or 2 bounds for {ind} ("1" or "2")? ', ans=['1', '2'],
+                        boundnum = inp(f'>>> Would you like to set 1 or 2 bounds for {ind} ("1" or "2")? ',
+                                       ans=['1', '2'],
                                        rep_msg='Please enter either a 1 or a 2')
                         if boundnum == '1':
                             fmt = False
                             while not fmt:
                                 bound = input(
-                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
+                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
                                 if bound[0] in ['>', '<'] and int_check(bound[1:]):
                                     fmt = True
                                 else:
@@ -397,7 +397,7 @@ def login_cycle():
                             fmt = False
                             while not fmt:
                                 bound1 = input(
-                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
+                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
                                 if bound1[0] in ['>', '<'] and int_check(bound1[1:]):
                                     fmt = True
                                 else:
@@ -405,9 +405,9 @@ def login_cycle():
                                         'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
                             fmt = False
                             while not fmt:
-                                bound1 = input(
-                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and \nthey are input as percentages; check github read me for more info): ')
-                                if bound1[0] in ['>', '<'] and int_check(bound1[1:]):
+                                bound2 = input(
+                                    f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
+                                if bound2[0] in ['>', '<'] and int_check(bound2[1:]):
                                     fmt = True
                                 else:
                                     print(
@@ -429,7 +429,6 @@ def login_cycle():
                                 IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
                                     userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings),
                                                 bound2, float(last_quote)))
-                print(indBools)
                 if functools.reduce(lambda x, y: x * y, indBools):
                     print(f'{ticker} has cleared your bounds.')
                 else:
