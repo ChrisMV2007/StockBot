@@ -6,11 +6,11 @@ def rsi_anal(rsi, bound):
 
 
 def stochastic_rsi_anal(stochastic_rsi, bound, KoD):  # K comes first
-    if KoD.len == 2:
+    if len(KoD) == 2:
         return True if eval(
             f'{stochastic_rsi[0][stochastic_rsi[0].size - 1]} {bound[0][0]} {bound[0][1:]}') and eval(
             f'{stochastic_rsi[1][stochastic_rsi[1].size - 1]} {bound[1][0]} {bound[1][1:]}') else False
-    if KoD.len == 1:
+    if len(KoD) == 1:
         if KoD == 'k':
             if bound[0][0] == '>':
                 return stochastic_rsi[0][stochastic_rsi[0].size - 1] > float(bound[0][1:])
