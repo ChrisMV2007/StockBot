@@ -308,6 +308,7 @@ def login_cycle():
                 SP.get_hist(ticker, int(temp_userinfo['def_hist_length']), temp_userinfo['def_hist_interval'].iloc[0]),
                 ticker, temp_userinfo).show()
         if action == 'indicator analysis':
+            print('\n-----[INDICATOR ANALYSIS]-----')
             SoW = inp('>>> Input "watchlist" to perform an indicator-based analysis on your whole watchlist, input "'
                       'stock" to just do a singular stock. ', ans=['watchlist', 'stock'],
                       rep_msg='Please enter a valid input.')
@@ -343,7 +344,8 @@ def login_cycle():
                         indBools.append(
                             IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(var_iter=[SP.get_hist(ticker, int(
                                 userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + userinfo[
-                                                                                               'def_stochastic rsi_set']),
+                                                                                               'def_stochastic rsi_set'].iloc[
+                                                                                               0].split(',')),
                                                         bound, KoD))
                     elif ind == 'rsi':
                         idict = {'sma': Indicators.sma, 'ema': Indicators.ema, 'rsi': Indicators.rsi,
