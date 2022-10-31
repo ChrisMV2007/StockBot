@@ -363,7 +363,8 @@ def login_cycle():
                         except:
                             isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
-                        indBools.append(IndAnal.rsi_anal(idict[ind](var_iter=[hist] + isettings), bound))
+                        indBools.append(IndAnal.rsi_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                            userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings), bound))
                     else:
                         boundnum = inp(f'Would you like to set 1 or 2 bounds for {ind} ("1" or "2")? ', ans=['1', '2'],
                                        rep_msg='Please enter either a 1 or a 2')
@@ -379,14 +380,17 @@ def login_cycle():
                                         'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
 
                             try:
-                                isettings = list(map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                                isettings = list(
+                                    map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
                             except:
                                 isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
 
                             hist = yf.Ticker(ticker).history()
                             last_quote = hist['Close'].iloc[-1]
                             indBools.append(
-                                IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound, float(last_quote)))
+                                IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                    userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings),
+                                                bound, float(last_quote)))
                         if boundnum == '2':
                             fmt = False
                             while not fmt:
@@ -416,11 +420,18 @@ def login_cycle():
                             hist = yf.Ticker(ticker).history()
                             last_quote = hist['Close'].iloc[-1]
                             indBools.append(
-                                IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound1, float(last_quote)))
+                                IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                    userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings),
+                                                bound1, float(last_quote)))
                             indBools.append(
-                                IndAnal.ma_anal(idict[ind](var_iter=[hist] + isettings), bound2, float(last_quote)))
+                                IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                    userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings),
+                                                bound2, float(last_quote)))
+                print(indBools)
                 if functools.reduce(lambda x, y: x * y, indBools):
-                    print(f'{ticker} has cleared your bounds. ')
+                    print(f'{ticker} has cleared your bounds.')
+                else:
+                    print(f'{ticker} has not cleared your bounds.')
 
         if action == 'log out':
             return
