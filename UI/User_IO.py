@@ -430,9 +430,207 @@ def login_cycle():
                                     userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings),
                                                 bound2, float(last_quote)))
                 if functools.reduce(lambda x, y: x * y, indBools):
-                    print(f'{ticker} has cleared your bounds.')
+                    print(f'ANALYSIS RESULTS: {ticker} has cleared your bounds.')
                 else:
-                    print(f'{ticker} has not cleared your bounds.')
+                    print(f'ANALYSIS RESULTS: {ticker} has not cleared your bounds.')
+            if SoW == 'watchlist':
+                inds = [ind for ind in input(
+                    '>>> Input the indicators you would like to use (rsi, stochastic rsi, ema, sma, separate indicators with commas): ').split(
+                    ',') if ind in ['rsi', 'stochastic rsi', 'sma', 'ema']]
+                if 'stochastic rsi' in inds:
+                    KoD = inp(
+                        ">>> Would you like to use stochastic rsi's K window, D window, or both ('k', 'd', or 'kd')? ",
+                        ans=['k', 'd', 'kd'], rep_msg='Please enter a valid input.')
+                    fmt = False
+                    if KoD == 'kd':
+                        while not fmt:
+                            srsibounds = [
+                                input('>>> What would like the bound for the k window to be (ex: >3 or <5): '),
+                                input('>>> What would like the bound for the d window to be (ex: >3 or <5): ')]
+                            if srsibounds[0][0] in ['>', '<'] and srsibounds[1][0] in ['>', '<'] and int_check(
+                                    srsibounds[0][1:]) and int_check(srsibounds[1][1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bounds with proper formatting (">" or "<" followed by an integer value).')
+                if 'rsi' in inds:
+                    fmt = False
+                    while not fmt:
+                        rsibound = input(f'>>> What would like the bound for {ind} to be (ex: >5 or <30): ')
+                        if rsibound[0] in ['>', '<'] and int_check(rsibound[1:]):
+                            fmt = True
+                        else:
+                            print(
+                                'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                if 'ema' in inds:
+                    boundnum = inp(f'>>> Would you like to set 1 or 2 bounds for {ind} ("1" or "2")? ',
+                                   ans=['1', '2'],
+                                   rep_msg='Please enter either a 1 or a 2')
+                    if boundnum == '1':
+                        fmt = False
+                        while not fmt:
+                            emabound = input(
+                                f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
+                            if emabound[0] in ['>', '<'] and int_check(emabound[1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                    if boundnum == '2':
+                        fmt = False
+                        while not fmt:
+                            emabound1 = input(
+                                f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
+                            if emabound1[0] in ['>', '<'] and int_check(emabound1[1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                        fmt = False
+                        while not fmt:
+                            emabound2 = input(
+                                f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
+                            if emabound2[0] in ['>', '<'] and int_check(emabound2[1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                if 'sma' in inds:
+                    boundnum = inp(f'>>> Would you like to set 1 or 2 bounds for {ind} ("1" or "2")? ',
+                                   ans=['1', '2'],
+                                   rep_msg='Please enter either a 1 or a 2')
+                    if boundnum == '1':
+                        fmt = False
+                        while not fmt:
+                            smabound = input(
+                                f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
+                            if smabound[0] in ['>', '<'] and int_check(smabound[1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                    if boundnum == '2':
+                        fmt = False
+                        while not fmt:
+                            smabound1 = input(
+                                f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
+                            if smabound1[0] in ['>', '<'] and int_check(smabound1[1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                        fmt = False
+                        while not fmt:
+                            smabound2 = input(
+                                f'>>> What would like the bound for {ind} to be (note that bounds can be negative for {ind}, and they are input as percentages; check github read me for more info): ')
+                            if smabound2[0] in ['>', '<'] and int_check(smabound2[1:]):
+                                fmt = True
+                            else:
+                                print(
+                                    'Please enter your bound with proper formatting (">" or "<" followed by an integer value).')
+                valid_stocks = []
+                for ticker in userinfo['watchlist'].split(','):
+                    indBools = []
+                    for ind in inds:
+                        idict = {'sma': Indicators.sma, 'ema': Indicators.ema, 'rsi': Indicators.rsi,
+                                 'stochastic rsi': Indicators.stochastic_rsi}
+                        if ind == 'stochastic rsi':
+                            try:
+                                isettings = list(
+                                    map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                            except:
+                                isettings = [try_replace(userinfo[f'def_{i.lower()}_set'].iloc[0])]
+
+                            indBools.append(
+                                IndAnal.stochastic_rsi_anal(Indicators.stochastic_rsi(var_iter=[SP.get_hist(ticker, int(
+                                    userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + userinfo[
+                                                                                                   'def_stochastic rsi_set'].iloc[
+                                                                                                   0].split(',')),
+                                                            srsibounds, KoD))
+                        elif ind == 'rsi':
+                            try:
+                                isettings = list(
+                                    map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                            except:
+                                isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+
+                            indBools.append(IndAnal.rsi_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[0])] + isettings),
+                                                             rsibound))
+                        elif ind == 'ema':
+                            if boundnum == '1':
+                                try:
+                                    isettings = list(
+                                        map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                                except:
+                                    isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+
+                                hist = yf.Ticker(ticker).history()
+                                last_quote = hist['Close'].iloc[-1]
+                                indBools.append(
+                                    IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                        userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[
+                                                                                         0])] + isettings),
+                                                    emabound, float(last_quote)))
+                            if boundnum == '2':
+                                try:
+                                    isettings = list(
+                                        map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                                except:
+                                    isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+
+                                hist = yf.Ticker(ticker).history()
+                                last_quote = hist['Close'].iloc[-1]
+                                indBools.append(
+                                    IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                        userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[
+                                                                                         0])] + isettings),
+                                                    emabound1, float(last_quote)))
+                                indBools.append(
+                                    IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                        userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[
+                                                                                         0])] + isettings),
+                                                    emabound2, float(last_quote)))
+                        elif ind == 'sma':
+                            if boundnum == '1':
+                                try:
+                                    isettings = list(
+                                        map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                                except:
+                                    isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+
+                                hist = yf.Ticker(ticker).history()
+                                last_quote = hist['Close'].iloc[-1]
+                                indBools.append(
+                                    IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                        userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[
+                                                                                         0])] + isettings),
+                                                    smabound, float(last_quote)))
+                            if boundnum == '2':
+                                try:
+                                    isettings = list(
+                                        map(try_replace, userinfo[f'def_{ind.lower()}_set'].iloc[0].split(',')))
+                                except:
+                                    isettings = [try_replace(userinfo[f'def_{ind.lower()}_set'].iloc[0])]
+
+                                hist = yf.Ticker(ticker).history()
+                                last_quote = hist['Close'].iloc[-1]
+                                indBools.append(
+                                    IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                        userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[
+                                                                                         0])] + isettings),
+                                                    smabound1, float(last_quote)))
+                                indBools.append(
+                                    IndAnal.ma_anal(idict[ind](var_iter=[SP.get_hist(ticker, int(
+                                        userinfo['def_hist_length']), userinfo['def_hist_interval'].iloc[
+                                                                                         0])] + isettings),
+                                                    smabound2, float(last_quote)))
+                    if functools.reduce(lambda x, y: x * y, indBools):
+                        valid_stocks.append(ticker)
+                if len(valid_stocks) >= 1:
+                    print(f'ANALYSIS RESULTS: {valid_stocks} passed your bounds:')
+                else:
+                    print('ANALYSIS RESULTS: No stocks passed your bounds.')
 
         if action == 'log out':
             return
