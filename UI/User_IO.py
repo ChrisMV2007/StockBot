@@ -282,8 +282,8 @@ def login_cycle():
         action = inp(
             '>>> Input "settings" to change default settings (including your watchlist), "chart" to launch charts '
             '(on default settings), "manual chart" to manually input chart settings,\n"indicator analysis" to perform '
-            'indicator analysis, "log out" to log out." ',
-            ans=['settings', 'indicator analysis', 'chart', 'manual chart', 'exit', 'log out'],
+            'indicator analysis, "swing analysis" to perform swing analysis, "log out" to log out." ',
+            ans=['settings', 'indicator analysis', 'chart', 'manual chart', 'exit', 'swing analysis', 'log out'],
             rep_msg="Please enter a valid input")
         if action == 'settings':
             change_settings(username, userinfo)
@@ -458,7 +458,8 @@ def login_cycle():
             if SoW == 'watchlist':
                 indsfilled = False
                 while not indsfilled:
-                    ind_input = input('>>> Input the indicators you would like to use (rsi, stochastic rsi, ema, sma, separate indicators with commas): ')
+                    ind_input = input(
+                        '>>> Input the indicators you would like to use (rsi, stochastic rsi, ema, sma, separate indicators with commas): ')
                     inds = [ind for ind in ['stochastic rsi', 'sma', 'ema'] if ind in ind_input]
                     skip = False
                     try:
@@ -473,9 +474,10 @@ def login_cycle():
                                 inds.append('rsi')
                         except:
                             absdefg = 0
-                    
+
                     if len(inds) == 0:
-                        print('Please input at least 1 indicator. Available indicators: rsi, stochastic rsi, ema, sma. ')
+                        print(
+                            'Please input at least 1 indicator. Available indicators: rsi, stochastic rsi, ema, sma. ')
                     else:
                         indsfilled = True
                 if 'stochastic rsi' in inds:
@@ -672,6 +674,7 @@ def login_cycle():
                     print(f'ANALYSIS RESULTS: {valid_stocks} passed your bounds.')
                 else:
                     print('ANALYSIS RESULTS: No stocks passed your bounds.')
-
+        if action == 'swing analysis':
+            pass
         if action == 'log out':
             return
