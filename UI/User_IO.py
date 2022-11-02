@@ -3,6 +3,7 @@ import UI.Backend.StockPrices as SP
 import UI.Backend.Indicators as Indicators
 import UI.Graph as graph
 import UI.Backend.IndicatorAnalysis as IndAnal
+import UI.Backend.Swing
 import csv
 import functools
 import yfinance as yf
