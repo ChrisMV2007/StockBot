@@ -316,9 +316,23 @@ def login_cycle():
                 ticker = input('>>> Input the ticker of the stock you want to analyse (all caps): ')
                 indsfilled = False
                 while not indsfilled:
-                    inds_input = input(
+                    ind_input = input(
                         '>>> Input the indicators you would like to use (rsi, stochastic rsi, ema, sma, separate indicators with commas): ')
-                    inds = [ind for ind in ['rsi', 'stochastic rsi', 'sma', 'ema'] if ind in inds_input]
+                    inds = [ind for ind in ['stochastic rsi', 'sma', 'ema'] if ind in ind_input]
+                    skip = False
+                    try:
+                        if ind_input[ind_input.find('rsi') - 11:ind_input.find('rsi') - 1] != 'stochastic':
+                            inds.append('rsi')
+                        skip = True
+                    except:
+                        abcdefg = 0
+                    if not skip:
+                        try:
+                            if ind_input[ind_input.find('rsi') - 11:ind_input.find('rsi') - 1] != 'stochastic':
+                                inds.append('rsi')
+                        except:
+                            absdefg = 0
+
                     if len(inds) == 0:
                         print(
                             'Please input at least 1 indicator. Available indicators: rsi, stochastic rsi, ema, sma. ')
@@ -445,8 +459,19 @@ def login_cycle():
                 while not indsfilled:
                     ind_input = input('>>> Input the indicators you would like to use (rsi, stochastic rsi, ema, sma, separate indicators with commas): ')
                     inds = [ind for ind in ['stochastic rsi', 'sma', 'ema'] if ind in ind_input]
-                    if 'rsi' in ind_input:
-                        ind_input.find()
+                    skip = False
+                    try:
+                        if ind_input[ind_input.find('rsi') - 11:ind_input.find('rsi') - 1] != 'stochastic':
+                            inds.append('rsi')
+                        skip = True
+                    except:
+                        abcdefg = 0
+                    if not skip:
+                        try:
+                            if ind_input[ind_input.find('rsi') - 11:ind_input.find('rsi') - 1] != 'stochastic':
+                                inds.append('rsi')
+                        except:
+                            absdefg = 0
                     
                     if len(inds) == 0:
                         print('Please input at least 1 indicator. Available indicators: rsi, stochastic rsi, ema, sma. ')
