@@ -675,6 +675,16 @@ def login_cycle():
                 else:
                     print('ANALYSIS RESULTS: No stocks passed your bounds.')
         if action == 'swing analysis':
-            pass
+            SoW = inp('>>> Input "watchlist" to perform an swing analysis on your whole watchlist, input "'
+                      'stock" to just do a singular stock. ', ans=['watchlist', 'stock'],
+                      rep_msg='Please enter a valid input.')
+            if SoW == 'stock':
+                ticker = input(
+                    'What stock would you like to perform indicator analysis on (input ticker in all caps)? ')
+                len = input('How many intervals back would you like to measure swing for (see github readme for more '
+                            'info on how hist tracking works)? ', int_only=True)
+                time_id = inp('What time id would you like to use (see github for more info on how hist track works)? ',
+                              ans=['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo'],
+                              rep_msg='Please enter a valid time interval.')
         if action == 'log out':
             return
