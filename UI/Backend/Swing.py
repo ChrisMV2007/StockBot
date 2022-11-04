@@ -7,9 +7,8 @@ from UI.Backend.Indicators import ema
 
 
 def swing(hist, ema_len, length, step):
-    ema_ = ema(hist, ema_len)['EMA']
-    cut = len(ema_) - length if len(ema_) > length else 0
-    ema_ = ema_.tolist()[cut::step]
+    ema_ = ema(hist, ema_len)
+    ema_ = ema_.tolist()[::step]
     res = []
     for ind, ma in enumerate(ema_):
         try:
