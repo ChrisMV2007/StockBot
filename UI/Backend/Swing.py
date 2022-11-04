@@ -29,5 +29,5 @@ def swing_certainty(hist, ema_len, step):
 
 if __name__ == '__main__':
     tsla = get_hist('GOOG', 130, '1d')
-    posneg, certainty = swing_certainty(tsla, 30, 100, 5)
+    posneg, certainty = swing_certainty(tsla, 30, 5)
     print(f'GOOG has a {posneg} trend (certainty : {certainty}%)')
