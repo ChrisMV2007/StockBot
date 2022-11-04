@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from UI.Backend.Indicators import ema
 
 
-def swing(hist, ema_len, length, step):
+def swing(hist, ema_len, step):
     ema_ = ema(hist, ema_len)
     ema_ = ema_.tolist()[::step]
     res = []
