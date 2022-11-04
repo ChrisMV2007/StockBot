@@ -20,8 +20,8 @@ def swing(hist, ema_len, step):
             round(res.count('-') / len(res) * 100, 2)]
 
 
-def swing_certainty(hist, ema_len, length, step):
-    pos, neg = swing(hist, ema_len, length, step)
+def swing_certainty(hist, ema_len, step):
+    pos, neg = swing(hist, ema_len, step)
     posneg = "positive" if pos > neg else "negative"
     certainty = pos if pos > neg else neg
     return posneg, certainty
