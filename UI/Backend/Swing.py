@@ -6,9 +6,10 @@ from matplotlib import pyplot as plt
 from UI.Backend.Indicators import ema
 
 
-def swing(hist, ema_len, step):
+def swing(hist, ema_len, length, step):
     ema_ = ema(hist, ema_len)
-    ema_ = ema_.tolist()[::step]
+    cut = len(ema_) - length if len(ema_) > length else 0
+    ema_ = ema_.tolist()[cut::step]
     res = []
     for ind, ma in enumerate(ema_):
         try:
@@ -20,8 +21,8 @@ def swing(hist, ema_len, step):
             round(res.count('-') / len(res) * 100, 2)]
 
 
-def swing_certainty(hist, ema_len, step):
-    pos, neg = swing(hist, ema_len, step)
+def swing_certainty(hist, ema_len, length, step):
+    pos, neg = swing(hist, ema_len, length, step)
     posneg = "positive" if pos > neg else "negative"
     certainty = pos if pos > neg else neg
     return posneg, certainty
@@ -29,5 +30,5 @@ def swing_certainty(hist, ema_len, step):
 
 if __name__ == '__main__':
     tsla = get_hist('GOOG', 130, '1d')
-    posneg, certainty = swing_certainty(tsla, 30, 5)
+    posneg, certainty = swing_certainty(tsla, 30, 100, 5)
     print(f'GOOG has a {posneg} trend (certainty : {certainty}%)')
