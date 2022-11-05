@@ -1,5 +1,7 @@
 # StockBot
 
+<hr />
+
 ## A Python/Terminal Based Interface to Display Graphs and Screen Stocks Based on Indicators or Trend
 
 This program was built with the yfinance module was created with the intent of expediting the stock screening process for those who have formulaic stock strategies and would like to automate their daily market check, as well as serve as a final project before I begin my studies in front-end development.
