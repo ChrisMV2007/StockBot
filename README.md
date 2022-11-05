@@ -1,5 +1,4 @@
 # StockBot
-
 <hr />
 
 ## A Python/Terminal Based Interface to Display Graphs and Screen Stocks Based on Indicators or Trend
