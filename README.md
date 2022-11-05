@@ -40,4 +40,8 @@ In short, clone the repository onto your device using git bash (or another git a
 
 <hr />
 
+### INPUT GUIDE / USER MANUAL
 
+#### Test
+
+##### Test
