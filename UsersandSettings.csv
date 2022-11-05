@@ -1,3 +1,0 @@
-,user,watchlist,def_gtype,darkmode,def_indicators,def_rsi_set,def_stochastic rsi_set,def_ema_set,def_sma_set,def_rsi_col,def_stochastic rsi_col,def_ema_col,def_sma_col,mawhist,def_hist_length,def_hist_interval
-0,Default,"AAPL,MSFT,TSLA",line,no,NA_,"14,Close","3,3,5,Close",14,20,#A865C9,"#FBBF77,b",#FFD580,#FFFFE0,yes,180,1d
-1,Temp,,,,,,,,,,,,,,,
