@@ -6,7 +6,7 @@ This program was built with the yfinance module was created with the intent of e
 
 <hr />
 
-### FEATURES
+## FEATURES
 - Create different profiles and save settings/watchlists on each profile
 - Launch charts with customizable indicators and aesthetic properties
 - Filter stocks based on indicator-based conditions
@@ -15,7 +15,7 @@ This program was built with the yfinance module was created with the intent of e
 
 <hr />
 
-### HOW TO INSTALL AND RUN
+## HOW TO INSTALL AND RUN
 In short, clone the repository onto your device using git bash (or another git application with similar capabilities) and install the dependencies below. Note that this was written from the perspective of a windows user (but the instructions will likely still be useful given you replace any windows specific instructions).
 1. Clone the Repository (Skip if you already have a way to clone the repository)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1 Go to the Git downloads website and click https://git-scm.com/downloads "Download for Windows"<br/>
@@ -40,8 +40,6 @@ In short, clone the repository onto your device using git bash (or another git a
 
 <hr />
 
-### INPUT GUIDE / USER MANUAL
+## INPUT GUIDE / USER MANUAL
 
-#### Test
-
-##### Test
+### Test
