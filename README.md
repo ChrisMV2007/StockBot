@@ -17,7 +17,7 @@ This program was built with the yfinance module was created with the intent of e
 
 ### HOW TO INSTALL AND RUN
 In short, clone the repository onto your device using git bash (or another git application with similar capabilities) and install the dependencies below. Note that this was written from the perspective of a windows user (but the instructions will likely still be useful given you replace any windows specific instructions).
-1. Clone the Repository (Skip if you already have a way to clone the repository)
+1. Clone the Repository (Skip if you already have a way to clone the repository) <br/>
   1.1 Go to the Git downloads website and click https://git-scm.com/downloads "Download for Windows"
   1.2 Once the installation file downloads, open it and follow the setup process (with the recommended settings unless you wish otherwise)
   1.3 When the git files download, open GIT GUI and click 'Clone Existing Repository'
