@@ -65,6 +65,8 @@ def ema(hist=None, length=None, var_iter=None):
         hist, length = var_iter
     if type(hist) != 'DataFrame':
         reliance = hist['Close'].to_frame()
+    else:
+        reliance = hist['Close']
     reliance['EMA'] = reliance['Close'].ewm(span=length).mean()
     reliance.dropna(inplace=True)
     return reliance['EMA']
