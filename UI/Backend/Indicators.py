@@ -35,6 +35,7 @@ def stochastic_rsi(hist=None, k_window=None, d_window=None, window=None, time_id
                    var_iter=None):  # k=avg of the high/low, d=moving average of k
     if var_iter:
         hist, k_window, d_window, window, time_id = var_iter
+        k_window, d_window, window = int(k_window), int(d_window), int(window)
     TI_validity(time_id)
     hist = hist[time_id]
 
@@ -62,7 +63,8 @@ def sma(hist=None, length=None, var_iter=None):
 def ema(hist=None, length=None, var_iter=None):
     if var_iter:
         hist, length = var_iter
-    reliance = hist['Close'].to_frame()
+    if type(hist) != 'DataFrame':
+        reliance = hist['Close'].to_frame()
     reliance['EMA'] = reliance['Close'].ewm(span=length).mean()
     reliance.dropna(inplace=True)
     return reliance['EMA']
