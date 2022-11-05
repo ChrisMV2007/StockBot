@@ -21,7 +21,7 @@ In short, clone the repository onto your device using git bash (or another git a
 &nbsp;&nbsp;&nbsp;&nbsp;1.1 Go to the Git downloads website and click https://git-scm.com/downloads "Download for Windows"<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.2 Once the installation file downloads, open it and follow the setup process (with the recommended settings unless you wish otherwise)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.3 When the git files download, open GIT GUI and click 'Clone Existing Repository'<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.1 In "Souce Location", paste this link: https://github.com/ChrisMV2007/StockBot.git 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.1 In "Souce Location", paste this link: https://github.com/ChrisMV2007/StockBot.git <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.2 In "Target Directory", locate where you want the program files to reside.<br/>
 2. Install the Dependencies (skip files that are already on your computer)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;2.1 Install python https://www.python.org/downloads/<br/>
