@@ -76,6 +76,9 @@ def graph(stock, hist, type, dark_mode=False, indicators=[], inames=[], ema_sma_
                 ax[index + 1].plot(hist['Date'][len(hist) - len(indicator):], indicator, color=color, label=label)
 
     else:
+        ax.set_xlabel('Date')
+        ax.set_ylabel('Price')
+        ax.set_title(f'{stock} {type[:1].capitalize() + type[1:]} Graph')
         ax.xaxis.set_major_formatter(date_format)
 
         if type == 'line':
