@@ -48,12 +48,17 @@ In short, clone the repository onto your device using git bash (or another git a
 The login interface is self explanitory; input "log in" to log in, "sign up" to create a new profile. When signing up, entering a user that does not exist will automatically create that profile.
 
 ### Settings
-The settings menu is used to change default chart settings and your watchlist. Most of the menu is navigable via the options and input guides, but some specific aspects of the input are listed here.
-- For "indicator colors", colors are entered as hex values; a hashtag followed by 6 digits (ex: #239001)
-- Moving average location changes whether moving averages (ema/sma) are displayed seperate or with the stock prices history when the chart is launched
-- Watchlist is input as all caps tickers with commas in between each ticker (ex: MSFT,AAPL,GOOG)
+The settings menu is used to change default chart settings and your watchlist. Most of the menu is navigable via the options and input guides, but some potenntially unspecific aspects of the input are listed here.
+- "indicators" allows you to select the indicators that show when launching a chart
 - Indicator settings require knowledge of the indicator you are changing the setting for; make sure that you know what each value means and how the indicator works before changing it's settings
 - Stochastic RSI has 2 colors (1 for the k line and 1 for the d line); it takes 2 colors but asks for them in separate input lines
 - Stock history allows you to change the length or the interval; the interval is how long is in between each candle/line point (ex: 1d, 90m, etc.) and the length is how many intervals into the past the chart displays (ex: interval = 2d & length = 30 means that the chart will display a stock's history 60 days into the past with each) candle/line point being 2 days apart.
+- Moving average location changes whether moving averages (ema/sma) are displayed seperate or with the stock prices history when the chart is launched
+- Watchlist is input as all caps tickers with commas in between each ticker (ex: MSFT,AAPL,GOOG)
+- For "indicator colors", colors are entered as hex values; a hashtag followed by 6 digits (ex: #239001)
+
+### Chart and Manual Chart
+Chart displays charts based on default chart settings (see settings to change default chart settings). Manual chart opens the settings interface and allows you to make chart customizations to your chart without having to change your settings. For both manual and auto chart you are given the option to launch charts for either a particular stock or every stock in your watchlist. 
 
 ### 
+
