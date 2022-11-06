@@ -684,7 +684,7 @@ def login_cycle():
             if SoW == 'stock':
                 ticker = input(
                     '>>> What stock would you like to perform trend analysis on (input ticker in all caps)? ')
-                len = inp('>>> How many intervals back would you like to measure trend for (see github readme for more '
+                leng = inp('>>> How many intervals back would you like to measure trend for (see github readme for more '
                           'info on how hist tracking works)? ', int_only=True, rep_msg='Please input an integer.')
                 time_id = inp(
                     '>>> What time id would you like to use (see github for more info on how hist tracking works)? ',
@@ -696,11 +696,11 @@ def login_cycle():
                     '>>> What would you like the step to be for your trend analysis (check github readme for more '
                     'info, input 1 if you would not like a step)? ', int_only=True, rep_msg='Please input an'
                                                                                             'integer')
-                posneg, certainty = Swing.swing_certainty(SP.get_hist(ticker, int(len) + int(ema_len), time_id),
+                posneg, certainty = Swing.swing_certainty(SP.get_hist(ticker, int(leng) + int(ema_len), time_id),
                                                           int(ema_len), int(len), int(step))
                 print(f'TREND RESULTS: {ticker} has a {posneg} trend (certainty : {certainty}%)')
             if SoW == 'watchlist':
-                len = inp('>>> How many intervals back would you like to measure trend for (see github readme for more '
+                leng = inp('>>> How many intervals back would you like to measure trend for (see github readme for more '
                           'info on how hist tracking works)? ', int_only=True, rep_msg='Please input an integer.')
                 time_id = inp(
                     '>>> What time id would you like to use (see github for more info on how hist track works)? ',
@@ -720,7 +720,7 @@ def login_cycle():
 
                 qualified = {}
                 for ticker in userinfo['watchlist'].iloc[0].split(','):
-                    posneg, certainty = Swing.swing_certainty(SP.get_hist(ticker, int(len) + int(ema_len), time_id),
+                    posneg, certainty = Swing.swing_certainty(SP.get_hist(ticker, int(leng) + int(ema_len), time_id),
                                                               int(ema_len), int(len), int(step))
                     if posneg == posneg_bound and certainty > int(threshold):
                         qualified[ticker] = certainty
