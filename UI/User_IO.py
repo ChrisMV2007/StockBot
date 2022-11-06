@@ -65,11 +65,13 @@ def new_user(df, path):
 
 
 def login(df, path):
-    user = input('>>> What is your username? ')
-
-    if user not in list(df['user']):
-        print('This user does not exist!')
-        login(df, path)
+    user_exists = False
+    while not user_exists:
+        user = input('>>> What is your username? ')
+        if user not in list(df['user']):
+            print('This user does not exist!')
+        else:
+            user_exists = True
 
     else:
         data = pd.read_csv(csv_dir, encoding="windows_1258")
