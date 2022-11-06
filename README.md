@@ -55,3 +55,5 @@ The settings menu is used to change default chart settings and your watchlist. M
 - Indicator settings require knowledge of the indicator you are changing the setting for; make sure that you know what each value means and how the indicator works before changing it's settings
 - Stochastic RSI has 2 colors (1 for the k line and 1 for the d line); it takes 2 colors but asks for them in separate input lines
 - Stock history allows you to change the length or the interval; the interval is how long is in between each candle/line point (ex: 1d, 90m, etc.) and the length is how many intervals into the past the chart displays (ex: interval = 2d & length = 30 means that the chart will display a stock's history 60 days into the past with each) candle/line point being 2 days apart.
+
+### 
